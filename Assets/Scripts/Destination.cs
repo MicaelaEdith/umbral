@@ -9,5 +9,6 @@ public class Destination : MonoBehaviour
     {
         PathDrawer drawer = FindFirstObjectByType<PathDrawer>();
         drawer.CalculatePath(destinationWaypoint);
+        Debug.Log("paso");
     }
 }
