@@ -6,6 +6,10 @@ public class MapClose : MonoBehaviour
     private GameObject mapView;
 
     [SerializeField]
+    private GameObject lbl_day;
+
+
+    [SerializeField]
     private GameObject openButton;
 
     [SerializeField]
@@ -20,5 +24,6 @@ public class MapClose : MonoBehaviour
         closeButton.SetActive(false);
         openButton.SetActive(true);
         player.SetActive(true);
+        lbl_day.SetActive(true);
     }
 }

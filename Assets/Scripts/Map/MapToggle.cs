@@ -6,6 +6,9 @@ public class MapToggle : MonoBehaviour
     private GameObject mapView;
 
     [SerializeField]
+    private GameObject lbl_day;
+
+    [SerializeField]
     private GameObject closeButton;
 
     [SerializeField]
@@ -17,5 +20,6 @@ public class MapToggle : MonoBehaviour
         closeButton.SetActive(true);
         player.SetActive(false);
         gameObject.SetActive(false);
+        lbl_day.SetActive(false);
     }
 }
