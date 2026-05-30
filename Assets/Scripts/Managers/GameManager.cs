@@ -5,6 +5,7 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
 
     public string currentBuildingName;
+    public Waypoint currentDestinationWaypoint;
 
     private void Awake()
     {
@@ -13,6 +14,10 @@ public class GameManager : MonoBehaviour
 
     public void UpdateLocation()
     {
-        // TODO: implementar
+        PathDrawer drawer = FindFirstObjectByType<PathDrawer>();
+        if (drawer != null && currentDestinationWaypoint != null)
+        {
+            drawer.CalculatePath(currentDestinationWaypoint);
+        }
     }
 }

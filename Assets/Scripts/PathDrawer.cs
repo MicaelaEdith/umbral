@@ -9,6 +9,26 @@ public class PathDrawer : MonoBehaviour
     [SerializeField]
     private Waypoint currentWaypoint;
 
+    public float TotalDistance { get; private set; }
+
+    private void Start()
+    {
+        if (currentWaypoint == null)
+        {
+            Waypoint[] allWaypoints = FindObjectsByType<Waypoint>(FindObjectsSortMode.None);
+            float closestDist = float.MaxValue;
+            foreach (Waypoint wp in allWaypoints)
+            {
+                float dist = Vector3.Distance(transform.position, wp.transform.position);
+                if (dist < closestDist)
+                {
+                    closestDist = dist;
+                    currentWaypoint = wp;
+                }
+            }
+        }
+    }
+
     public void CalculatePath(Waypoint destination)
     {
         List<Waypoint> path = FindPath(currentWaypoint, destination);
@@ -74,7 +94,7 @@ public class PathDrawer : MonoBehaviour
     {
         lineRenderer.positionCount = path.Count;
 
-        float totalDistance = 0f;
+        TotalDistance = 0f;
 
         for (int i = 0; i < path.Count; i++)
         {
@@ -85,13 +105,21 @@ public class PathDrawer : MonoBehaviour
 
             if (i > 0)
             {
-                totalDistance += Vector3.Distance(
+                TotalDistance += Vector3.Distance(
                     path[i - 1].transform.position,
                     path[i].transform.position
                 );
             }
         }
 
-        Debug.Log("Distancia total: " + totalDistance);
+        Debug.Log("Distancia total: " + TotalDistance);
+    }
+
+    public void CalculateTravelOptions(float distance, out float walkTime, out float busTime, out float busCost)
+    {
+        // TODO: implementar
+        walkTime = 0f;
+        busTime = 0f;
+        busCost = 0f;
     }
 }

@@ -13,6 +13,11 @@ public class Destination : MonoBehaviour
 
     private void OnMouseDown()
     {
+        PathDrawer drawer = FindFirstObjectByType<PathDrawer>();
+        if (drawer != null)
+        {
+            drawer.CalculatePath(destinationWaypoint);
+        }
         Invoke(nameof(ShowCard), delayBeforeShow);
     }
 
