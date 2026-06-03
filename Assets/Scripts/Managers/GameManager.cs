@@ -6,18 +6,38 @@ public class GameManager : MonoBehaviour
 
     public string currentBuildingName;
     public Waypoint currentDestinationWaypoint;
+    public string currentLocation;
+
+    [SerializeField] private BuildingInterior[] allBuildings;
 
     private void Awake()
     {
         Instance = this;
     }
 
+    private void Start()
+    {
+        currentLocation = "house";
+
+        foreach (var building in allBuildings)
+        {
+            if (building.BuildingName == currentLocation)
+                building.Show();
+            else
+                building.Hide();
+        }
+    }
+
     public void UpdateLocation()
     {
-        PathDrawer drawer = FindFirstObjectByType<PathDrawer>();
-        if (drawer != null && currentDestinationWaypoint != null)
+        currentLocation = currentBuildingName;
+
+        foreach (var building in allBuildings)
         {
-            drawer.CalculatePath(currentDestinationWaypoint);
+            if (building.BuildingName == currentLocation)
+                building.Show();
+            else
+                building.Hide();
         }
     }
 }

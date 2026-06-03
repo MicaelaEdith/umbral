@@ -112,14 +112,12 @@ public class PathDrawer : MonoBehaviour
             }
         }
 
-        Debug.Log("Distancia total: " + TotalDistance);
     }
 
     public void CalculateTravelOptions(float distance, out float walkTime, out float busTime, out float busCost)
     {
-        // TODO: implementar
-        walkTime = 0f;
-        busTime = 0f;
-        busCost = 0f;
+        walkTime = distance * 2f;
+        busTime = distance * 0.5f;
+        busCost = 5f;
     }
 }
