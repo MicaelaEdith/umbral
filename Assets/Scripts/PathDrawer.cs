@@ -114,10 +114,21 @@ public class PathDrawer : MonoBehaviour
 
     }
 
-    public void CalculateTravelOptions(float distance, out float walkTime, out float busTime, out float busCost)
+    public void ClearPath()
     {
-        walkTime = distance * 2f;
-        busTime = distance * 0.5f;
-        busCost = 5f;
+        lineRenderer.positionCount = 0;
+        TotalDistance = 0f;
+    }
+
+    public void SetCurrentWaypoint(Waypoint waypoint)
+    {
+        currentWaypoint = waypoint;
+    }
+
+    public void CalculateTravelOptions(float distance, out int walkTimeMinutes, out int busTimeMinutes, out int busCost)
+    {
+        walkTimeMinutes = Mathf.RoundToInt(distance * 4f);
+        busTimeMinutes = Mathf.RoundToInt(distance * 1f);
+        busCost = 750;
     }
 }

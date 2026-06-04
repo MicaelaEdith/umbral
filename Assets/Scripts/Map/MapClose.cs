@@ -24,6 +24,5 @@ public class MapClose : MonoBehaviour
         closeButton.SetActive(false);
         openButton.SetActive(true);
         player.SetActive(true);
-        lbl_day.SetActive(true);
     }
 }

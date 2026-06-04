@@ -43,6 +43,12 @@ public class TerminalMonitor : MonoBehaviour
         int index = System.Array.IndexOf(buttons, button);
         if (index == -1) return false;
 
+        for (int i = 0; i < buttons.Length && i < 6; i++)
+        {
+            if (i != index)
+                buttons[i].ResetButton();
+        }
+
         if (index == correctSequence[currentStep])
         {
             currentStep++;
@@ -54,7 +60,11 @@ public class TerminalMonitor : MonoBehaviour
             return true;
         }
 
-        ResetMonitor();
+        currentStep = 0;
+
+        if (index >= 6)
+            button.ResetButton();
+
         return false;
     }
 

@@ -20,6 +20,9 @@ public class MapToggle : MonoBehaviour
         closeButton.SetActive(true);
         player.SetActive(false);
         gameObject.SetActive(false);
-        lbl_day.SetActive(false);
+
+        PathDrawer drawer = FindFirstObjectByType<PathDrawer>();
+        if (drawer != null)
+            drawer.ClearPath();
     }
 }

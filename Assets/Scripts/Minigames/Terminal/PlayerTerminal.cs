@@ -4,6 +4,7 @@ public class PlayerTerminal : MonoBehaviour
 {
     [SerializeField] private TerminalMonitor[] monitors;
     [SerializeField] private GameObject parentToClose;
+    [SerializeField] private GameObject ticketButton;
 
     private int currentMonitorIndex;
     private int mistakeCount;
@@ -40,6 +41,7 @@ public class PlayerTerminal : MonoBehaviour
         if (button.IsCancel)
         {
             mistakeCount++;
+            GameManager.Instance.ScheduleMinutes(2);
             ResetToStart();
             return;
         }
@@ -72,6 +74,7 @@ public class PlayerTerminal : MonoBehaviour
         else
         {
             mistakeCount++;
+            GameManager.Instance.ScheduleMinutes(2);
             Debug.Log($"PlayerTerminal — error #{mistakeCount}");
         }
     }
@@ -115,6 +118,9 @@ public class PlayerTerminal : MonoBehaviour
             currentTicket.OnCollected -= OnTicketCollected;
             currentTicket = null;
         }
+
+        if (ticketButton != null)
+            ticketButton.SetActive(true);
 
         if (parentToClose != null)
             parentToClose.SetActive(false);
