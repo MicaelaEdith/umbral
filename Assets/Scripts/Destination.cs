@@ -23,7 +23,15 @@ public class Destination : MonoBehaviour
 
     private void ShowCard()
     {
-        if (card != null)
-            card.SetActive(true);
+        if (card == null) return;
+
+        Card[] allCards = FindObjectsByType<Card>(FindObjectsSortMode.None);
+        foreach (Card c in allCards)
+        {
+            if (c.gameObject != card)
+                c.Close();
+        }
+
+        card.SetActive(true);
     }
 }

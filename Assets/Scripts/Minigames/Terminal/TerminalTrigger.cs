@@ -1,19 +1,5 @@
 using UnityEngine;
 
-public class TerminalTrigger : MonoBehaviour
+public class TerminalTrigger : MinigameTrigger
 {
-    [SerializeField] private GameObject terminalMinigame;
-
-    private SpriteRenderer spriteRenderer;
-
-    private void Awake()
-    {
-        spriteRenderer = GetComponent<SpriteRenderer>();
-    }
-
-    private void OnMouseDown()
-    {
-        if (terminalMinigame != null)
-            terminalMinigame.SetActive(true);
-    }
 }

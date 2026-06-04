@@ -5,10 +5,12 @@ public class ClickableButton : MonoBehaviour
     [SerializeField] private float hoverAlpha = 0.7f;
     [SerializeField] private float pressedAlpha = 0.4f;
     [SerializeField] private bool isCancel;
+    [SerializeField] private Sprite pressedSprite;
 
     private SpriteRenderer spriteRenderer;
     private bool isPressed;
     private float normalAlpha;
+    private Sprite originalSprite;
 
     public bool IsPressed => isPressed;
     public bool IsInteractable { get; set; } = true;
@@ -19,7 +21,11 @@ public class ClickableButton : MonoBehaviour
     private void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
-        normalAlpha = spriteRenderer != null ? spriteRenderer.color.a : 1f;
+        if (spriteRenderer != null)
+        {
+            normalAlpha = spriteRenderer.color.a;
+            originalSprite = spriteRenderer.sprite;
+        }
     }
 
     private void OnMouseEnter()
@@ -44,7 +50,7 @@ public class ClickableButton : MonoBehaviour
     {
         if (isPressed) return;
         isPressed = true;
-        SetAlpha(pressedAlpha);
+        SetPressedVisuals();
         OnClick?.Invoke(this);
     }
 
@@ -52,13 +58,33 @@ public class ClickableButton : MonoBehaviour
     {
         if (isPressed) return;
         isPressed = true;
-        SetAlpha(pressedAlpha);
+        SetPressedVisuals();
     }
 
     public void ResetButton()
     {
         isPressed = false;
-        SetAlpha(normalAlpha);
+        SetNormalVisuals();
+    }
+
+    private void SetPressedVisuals()
+    {
+        if (spriteRenderer == null) return;
+        if (pressedSprite != null)
+            spriteRenderer.sprite = pressedSprite;
+        Color color = spriteRenderer.color;
+        color.a = pressedAlpha;
+        spriteRenderer.color = color;
+    }
+
+    private void SetNormalVisuals()
+    {
+        if (spriteRenderer == null) return;
+        if (pressedSprite != null)
+            spriteRenderer.sprite = originalSprite;
+        Color color = spriteRenderer.color;
+        color.a = normalAlpha;
+        spriteRenderer.color = color;
     }
 
     private void SetAlpha(float alpha)

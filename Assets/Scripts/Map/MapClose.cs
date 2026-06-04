@@ -24,5 +24,9 @@ public class MapClose : MonoBehaviour
         closeButton.SetActive(false);
         openButton.SetActive(true);
         player.SetActive(true);
+
+        Card[] cards = FindObjectsByType<Card>(FindObjectsSortMode.None);
+        foreach (Card card in cards)
+            card.Close();
     }
 }

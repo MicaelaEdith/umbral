@@ -5,6 +5,8 @@ public class PlayerTerminal : MonoBehaviour
     [SerializeField] private TerminalMonitor[] monitors;
     [SerializeField] private GameObject parentToClose;
     [SerializeField] private GameObject ticketButton;
+    [SerializeField] private MinigameTrigger triggerToDisable;
+    [SerializeField] private MinigameTrigger triggerToEnable;
 
     private int currentMonitorIndex;
     private int mistakeCount;
@@ -118,6 +120,18 @@ public class PlayerTerminal : MonoBehaviour
             currentTicket.OnCollected -= OnTicketCollected;
             currentTicket = null;
         }
+
+        if (triggerToDisable != null)
+        {
+            triggerToDisable.SetCanActivate(false);
+            triggerToDisable.NotifyClosed();
+        }
+
+        if (triggerToEnable != null)
+            triggerToEnable.SetCanActivate(true);
+
+        if (GameManager.Instance != null)
+            GameManager.Instance.shameActive = true;
 
         if (ticketButton != null)
             ticketButton.SetActive(true);

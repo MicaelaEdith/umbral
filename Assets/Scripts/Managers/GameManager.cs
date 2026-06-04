@@ -9,6 +9,9 @@ public class GameManager : MonoBehaviour
     public Waypoint currentDestinationWaypoint;
     public string currentLocation;
 
+    public bool shameActive;
+    [Range(0f, 1f)] public float shameLevel;
+
     [SerializeField] private BuildingInterior[] allBuildings;
     [SerializeField] private TextMeshProUGUI timeLabel;
     [SerializeField] private TextMeshProUGUI moneyLabel;
