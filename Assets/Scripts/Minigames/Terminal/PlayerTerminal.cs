@@ -43,7 +43,7 @@ public class PlayerTerminal : MonoBehaviour
         if (button.IsCancel)
         {
             mistakeCount++;
-            GameManager.Instance.ScheduleMinutes(2);
+            GameManager.Instance.ScheduleTime(2);
             ResetToStart();
             return;
         }
@@ -76,7 +76,7 @@ public class PlayerTerminal : MonoBehaviour
         else
         {
             mistakeCount++;
-            GameManager.Instance.ScheduleMinutes(2);
+            GameManager.Instance.ScheduleTime(2);
             Debug.Log($"PlayerTerminal — error #{mistakeCount}");
         }
     }

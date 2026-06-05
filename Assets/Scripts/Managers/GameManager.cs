@@ -5,6 +5,8 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
+    [SerializeField] private MoneyFeedback moneyFeedback;
+
     public string currentBuildingName;
     public Waypoint currentDestinationWaypoint;
     public string currentLocation;
@@ -16,15 +18,12 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI timeLabel;
     [SerializeField] private TextMeshProUGUI moneyLabel;
 
-    [SerializeField] private int currentHour = 7;
-    [SerializeField] private int currentMinute = 0;
-    [SerializeField] private int currentDay = 2;
-
+    [SerializeField] private int remainingMinutes = 660;
     [SerializeField] private int currentMoney = 2000;
 
     private float timeAccumulator;
     private const float REAL_SECONDS_PER_GAME_MINUTE = 1f;
-    private int minutesToAdd;
+    private int timeToSpend;
 
     private void Awake()
     {
@@ -52,24 +51,20 @@ public class GameManager : MonoBehaviour
         if (timeAccumulator >= REAL_SECONDS_PER_GAME_MINUTE)
         {
             timeAccumulator -= REAL_SECONDS_PER_GAME_MINUTE;
-            currentMinute++;
-            if (currentMinute >= 60)
-            {
-                currentMinute = 0;
-                currentHour++;
-                if (currentHour >= 24)
-                {
-                    currentHour = 0;
-                    currentDay++;
-                }
-            }
+            remainingMinutes--;
+            if (remainingMinutes < 0) remainingMinutes = 0;
             UpdateTimeDisplay();
+
+            if (remainingMinutes <= 0)
+            {
+                Debug.Log("Se acabó el tiempo del día");
+            }
         }
 
-        if (minutesToAdd > 0)
+        if (timeToSpend > 0)
         {
-            AddMinutes(minutesToAdd);
-            minutesToAdd = 0;
+            SpendTime(timeToSpend);
+            timeToSpend = 0;
         }
     }
 
@@ -77,10 +72,9 @@ public class GameManager : MonoBehaviour
     {
         if (timeLabel != null)
         {
-            string period = currentHour < 12 ? "am" : "pm";
-            int displayHour = currentHour % 12;
-            if (displayHour == 0) displayHour = 12;
-            timeLabel.text = $"Día {currentDay} - {displayHour:D2} : {currentMinute:D2} {period}";
+            int hours = remainingMinutes / 60;
+            int minutes = remainingMinutes % 60;
+            timeLabel.text = $"{hours:D2} : {minutes:D2} hs restantes";
         }
     }
 
@@ -90,19 +84,16 @@ public class GameManager : MonoBehaviour
             moneyLabel.text = $"$ {currentMoney}";
     }
 
-    public void AddMinutes(int minutes)
+    public void SpendTime(int minutes)
     {
-        currentMinute += minutes;
-        currentHour += currentMinute / 60;
-        currentMinute %= 60;
-        currentDay += currentHour / 24;
-        currentHour %= 24;
+        remainingMinutes -= minutes;
+        if (remainingMinutes < 0) remainingMinutes = 0;
         UpdateTimeDisplay();
     }
 
-    public void ScheduleMinutes(int minutes)
+    public void ScheduleTime(int minutes)
     {
-        minutesToAdd += minutes;
+        timeToSpend += minutes;
     }
 
     public bool CanAfford(int amount)
@@ -115,6 +106,8 @@ public class GameManager : MonoBehaviour
         currentMoney -= amount;
         if (currentMoney < 0) currentMoney = 0;
         UpdateMoneyDisplay();
+        if (moneyFeedback != null)
+            moneyFeedback.Flash();
     }
 
     public void UpdateLocation()

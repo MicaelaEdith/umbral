@@ -54,7 +54,7 @@ public class Card : MonoBehaviour
         if (drawer != null)
         {
             drawer.CalculateTravelOptions(drawer.TotalDistance, out int walkTime, out int _, out int _);
-            GameManager.Instance.ScheduleMinutes(walkTime);
+            GameManager.Instance.ScheduleTime(walkTime);
             drawer.SetCurrentWaypoint(destinationWaypoint);
         }
 
@@ -76,7 +76,7 @@ public class Card : MonoBehaviour
                 return;
 
             GameManager.Instance.SpendMoney(busCost);
-            GameManager.Instance.ScheduleMinutes(busTime);
+            GameManager.Instance.ScheduleTime(busTime);
             drawer.SetCurrentWaypoint(destinationWaypoint);
         }
 

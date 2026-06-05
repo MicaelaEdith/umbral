@@ -20,6 +20,7 @@ public class MapClose : MonoBehaviour
 
     public void Close()
     {
+        MapToggle.IsOpen = false;
         mapView.SetActive(false);
         closeButton.SetActive(false);
         openButton.SetActive(true);
