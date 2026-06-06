@@ -40,8 +40,6 @@ public class PathDrawer : MonoBehaviour
         }
 
         DrawPath(path);
-
-        currentWaypoint = destination;
     }
 
     List<Waypoint> FindPath(Waypoint start, Waypoint goal)

@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour
 {
@@ -7,6 +8,12 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private MoneyFeedback moneyFeedback;
     [SerializeField] private TimeFeedback timeFeedback;
+
+    [SerializeField] private GameObject mapButton;
+    [SerializeField] private GameObject backButton;
+
+    private readonly Stack<GameObject> subLocationStack = new Stack<GameObject>();
+    private GameObject currentSubRoom;
 
     public string currentBuildingName;
     public Waypoint currentDestinationWaypoint;
@@ -123,6 +130,34 @@ public class GameManager : MonoBehaviour
                 building.Show();
             else
                 building.Hide();
+        }
+    }
+
+    public void PushSubLocation(GameObject newLocation, GameObject backTarget = null)
+    {
+        subLocationStack.Push(backTarget != null ? backTarget : currentSubRoom);
+        currentSubRoom = newLocation;
+
+        if (mapButton != null) mapButton.SetActive(false);
+        if (backButton != null) backButton.SetActive(true);
+    }
+
+    public void PopSubLocation()
+    {
+        if (subLocationStack.Count == 0) return;
+
+        if (currentSubRoom != null)
+            currentSubRoom.SetActive(false);
+
+        currentSubRoom = subLocationStack.Pop();
+
+        if (currentSubRoom != null)
+            currentSubRoom.SetActive(true);
+
+        if (subLocationStack.Count == 0)
+        {
+            if (backButton != null) backButton.SetActive(false);
+            if (mapButton != null) mapButton.SetActive(true);
         }
     }
 }
