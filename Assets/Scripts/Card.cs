@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using TMPro;
 
 public class Card : MonoBehaviour
@@ -20,6 +22,53 @@ public class Card : MonoBehaviour
 
     [SerializeField]
     private TextMeshProUGUI busCostLabel;
+
+    private void Awake()
+    {
+        SetupButton("btn_walk");
+        SetupButton("btn_bus");
+    }
+
+    private void SetupButton(string buttonName)
+    {
+        Transform btnTransform = transform.Find(buttonName);
+        if (btnTransform == null) return;
+
+        Image img = btnTransform.GetComponent<Image>();
+        if (img == null) return;
+
+        img.color = new Color(1f, 1f, 1f, 0f);
+
+        EventTrigger trigger = btnTransform.GetComponent<EventTrigger>();
+        if (trigger == null) trigger = btnTransform.gameObject.AddComponent<EventTrigger>();
+
+        AddEvent(trigger, EventTriggerType.PointerEnter, _ =>
+        {
+            img.color = new Color(1f, 1f, 1f, 0.18f);
+        });
+
+        AddEvent(trigger, EventTriggerType.PointerExit, _ =>
+        {
+            img.color = new Color(1f, 1f, 1f, 0f);
+        });
+
+        AddEvent(trigger, EventTriggerType.PointerDown, _ =>
+        {
+            img.color = new Color(22f / 255f, 22f / 255f, 22f / 255f, 0.12f);
+        });
+
+        AddEvent(trigger, EventTriggerType.PointerUp, _ =>
+        {
+            img.color = new Color(1f, 1f, 1f, 0.25f);
+        });
+    }
+
+    private void AddEvent(EventTrigger trigger, EventTriggerType type, UnityEngine.Events.UnityAction<BaseEventData> action)
+    {
+        EventTrigger.Entry entry = new EventTrigger.Entry { eventID = type };
+        entry.callback.AddListener(action);
+        trigger.triggers.Add(entry);
+    }
 
     private void OnEnable()
     {

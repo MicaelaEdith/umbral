@@ -6,6 +6,7 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
 
     [SerializeField] private MoneyFeedback moneyFeedback;
+    [SerializeField] private TimeFeedback timeFeedback;
 
     public string currentBuildingName;
     public Waypoint currentDestinationWaypoint;
@@ -89,6 +90,8 @@ public class GameManager : MonoBehaviour
         remainingMinutes -= minutes;
         if (remainingMinutes < 0) remainingMinutes = 0;
         UpdateTimeDisplay();
+        if (timeFeedback != null)
+            timeFeedback.Flash();
     }
 
     public void ScheduleTime(int minutes)
