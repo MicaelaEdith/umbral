@@ -21,6 +21,13 @@ public class GameManager : MonoBehaviour
 
     public bool shameActive;
     [Range(0f, 1f)] public float shameLevel;
+    public int shameTimerMinutes { get; private set; }
+    [Range(0f, 1f)] public float timedShameOpacity = 0.85f;
+
+    [SerializeField, Range(1, 5)] private int shameFadeOutMinutes = 3;
+    private int shameFadeOutRemaining;
+    private float shameFadeOutStartLevel;
+    public bool IsShameFadingOut => shameFadeOutRemaining > 0;
 
     [SerializeField] private BuildingInterior[] allBuildings;
     [SerializeField] private TextMeshProUGUI timeLabel;
@@ -62,6 +69,29 @@ public class GameManager : MonoBehaviour
             remainingMinutes--;
             if (remainingMinutes < 0) remainingMinutes = 0;
             UpdateTimeDisplay();
+
+            if (shameTimerMinutes > 0)
+            {
+                shameTimerMinutes--;
+                if (shameTimerMinutes <= 0 && shameFadeOutRemaining <= 0)
+                {
+                    shameFadeOutRemaining = shameFadeOutMinutes;
+                    shameFadeOutStartLevel = shameLevel;
+                }
+            }
+
+            if (shameFadeOutRemaining > 0)
+            {
+                shameFadeOutRemaining--;
+                float t = 1f - (float)shameFadeOutRemaining / shameFadeOutMinutes;
+                shameLevel = Mathf.Lerp(shameFadeOutStartLevel, 0f, t);
+
+                if (shameFadeOutRemaining <= 0)
+                {
+                    shameActive = false;
+                    shameLevel = 0f;
+                }
+            }
 
             if (remainingMinutes <= 0)
             {
@@ -131,6 +161,14 @@ public class GameManager : MonoBehaviour
             else
                 building.Hide();
         }
+    }
+
+    public void SetShameTimed(float level, int durationMinutes)
+    {
+        shameActive = true;
+        shameLevel = level;
+        shameTimerMinutes = durationMinutes;
+        shameFadeOutRemaining = 0;
     }
 
     public void PushSubLocation(GameObject newLocation, GameObject backTarget = null)
