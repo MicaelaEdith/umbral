@@ -3,7 +3,6 @@ using UnityEngine;
 public class SignSection : MonoBehaviour
 {
     [SerializeField] private Color hoverColor = new Color(1, 1, 1, 0.5f);
-    [SerializeField] private Color pressColor = new Color(1, 1, 1, 0.8f);
 
     private SpriteRenderer sr;
     private Color defaultColor;
@@ -11,6 +10,16 @@ public class SignSection : MonoBehaviour
     private void Awake()
     {
         sr = GetComponent<SpriteRenderer>();
+    }
+
+    private void OnEnable()
+    {
+        if (sr != null)
+            sr.color = defaultColor;
+    }
+
+    private void Start()
+    {
         defaultColor = sr.color;
     }
 
@@ -22,15 +31,5 @@ public class SignSection : MonoBehaviour
     private void OnMouseExit()
     {
         sr.color = defaultColor;
-    }
-
-    private void OnMouseDown()
-    {
-        sr.color = pressColor;
-    }
-
-    private void OnMouseUp()
-    {
-        sr.color = hoverColor;
     }
 }
