@@ -11,6 +11,9 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (DialogueManager.Instance != null && DialogueManager.Instance.IsDialogueActive)
+            return;
+
         if (Input.GetMouseButtonDown(0) && !IsPointerOverUI())
         {
             Vector2 worldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
