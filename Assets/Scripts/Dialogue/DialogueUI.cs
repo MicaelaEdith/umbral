@@ -9,7 +9,7 @@ public class DialogueUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI playerText;
 
     private DialogueManager manager;
-    private bool waitingForClick;
+    private int lastChangeFrame;
 
     private enum State { Hidden, ShowingNpc, ShowingPlayer }
     private State state = State.Hidden;
@@ -27,7 +27,7 @@ public class DialogueUI : MonoBehaviour
         npcText.text = text;
         npcBubble.SetActive(true);
         state = State.ShowingNpc;
-        waitingForClick = true;
+        lastChangeFrame = Time.frameCount;
     }
 
     public void ShowPlayerLine(string text)
@@ -36,7 +36,7 @@ public class DialogueUI : MonoBehaviour
         playerText.text = text;
         playerBubble.SetActive(true);
         state = State.ShowingPlayer;
-        waitingForClick = true;
+        lastChangeFrame = Time.frameCount;
     }
 
     public void Hide()
@@ -44,17 +44,15 @@ public class DialogueUI : MonoBehaviour
         npcBubble.SetActive(false);
         playerBubble.SetActive(false);
         state = State.Hidden;
-        waitingForClick = false;
     }
 
     private void Update()
     {
-        if (!waitingForClick) return;
+        if (state == State.Hidden) return;
+        if (Time.frameCount <= lastChangeFrame) return;
 
         if (Input.GetMouseButtonDown(0))
         {
-            waitingForClick = false;
-
             switch (state)
             {
                 case State.ShowingNpc:

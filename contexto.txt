@@ -1,0 +1,136 @@
+=== UMBRAL - Contexto de desarrollo ===
+
+GENERO: Novela visual / point-and-click con simulación de tiempo
+ENGINE: Unity 2D (URP)
+UBICACION: /home/micaelaedith/Documentos/umbral
+
+=== ESCENAS ===
+- day_1.unity (vacia, solo camara)
+- day_2.unity (unica con GameManager armado, NPCs, dialogo, minijuegos)
+- day_3.unity (vacia, solo camara)
+- main_menu.unity
+- ending.unity
+
+=== ESTRUCTURA DE SCRIPTS (Assets/Scripts/) ===
+
+JEFE:
+  GameManager.cs - Singleton, maneja tiempo/dinero/ubicacion/verguenza/sub-locations
+  MapManager.cs  - Esqueleto sin usar
+
+MAPA:
+  MapToggle.cs   - Abre vista de mapa (static IsOpen)
+  MapClose.cs    - Cierra mapa, resetea MapToggle.IsOpen
+  Card.cs         - Opciones caminar/bus (gasta dinero en bus)
+  Destination.cs  - Objetos clicables en el mapa
+  Waypoint.cs     - Nodos de grafo para pathfinding
+  PathDrawer.cs   - BFS pathfinding entre waypoints
+
+JUGADOR:
+  PlayerController.cs - Click-to-move
+
+UI:
+  MainMenu.cs       - Carga de escenas
+  ShameBar.cs       - Barra de verguenza (celeste -> rojo)
+  MoneyFeedback.cs  - Parpadeo rojo + escala al gastar dinero
+
+MAPA MUNDO:
+  BuildingInterior.cs - Activa/desactiva interiores de edificios
+
+MINIGAMES:
+  MinigameTrigger.cs  - Trigger base: se oculta cuando minijuego activo o mapa abierto
+  RedirectButton.cs   - Boton de salida de minijuego
+  DoorSelector.cs     - Elegir puerta correcta; fallar descuenta 2min + verguenza
+  DoorTrigger.cs      - Abre minijuego de puertas, usa PushSubLocation
+  Signboard/
+    SignSection.cs    - Secciones del cartel con hover/press alpha
+  Terminal/
+    TerminalTrigger.cs   - Trigger del terminal (hereda MinigameTrigger)
+    ClickableButton.cs   - Boton interactivo del terminal
+    TerminalMonitor.cs   - Monitor con puzzle de secuencia
+    PlayerTerminal.cs    - Orquesta minijuego para el jugador
+    NpcTerminal.cs       - NPC juega automaticamente
+    Ticket.cs            - Objeto coleccionable al completar
+
+DIALOGOS (NUEVO - pendiente de setup):
+  DialogueManager.cs - Singleton. Orquesta dialogo por NPC.
+    - Tiene array allDialogueNodes (ScriptableObjects)
+    - Tiene referencia a DialogueUI y al Player
+    - Busca nodos por npcId, empieza por "root"
+    - Metodos: StartDialogue(), OnNpcClicked(), OnPlayerClicked(), EndDialogue()
+    - En el medio del dialogo desactiva el Player
+  DialogueNode.cs - ScriptableObject. Datos de un nodo de dialogo.
+    - CreateAssetMenu: "Umbral/Dialogue Node"
+    - Campos: nodeId, npcId, npcLine, playerLine, nextNodeId
+    - Si nextNodeId vacio -> IsLast = true
+  DialogueUI.cs - Muestra burbujas NPC/jugador, avanza con click
+    - Estados: Hidden / ShowingNpc / ShowingPlayer
+    - NPC clickeado -> avanza a linea del jugador
+    - Player clickeado -> avanza al siguiente nodo o cierra
+  NPC.cs - Componente en personajes del mundo
+    - Campos: npcId, npcName, hoverColor
+    - OnMouseDown() -> DialogueManager.Instance.StartDialogue(this)
+    - PlayTalkAnimation() / PlayIdleAnimation() con triggers de Animator
+
+=== SETUP ACTUAL EN day_2.unity ===
+
+GAMEMANAGER (root):
+  - Componente GameManager con todas las referencias (moneyFeedback, timeFeedback, etc.)
+  - Mismo GameObject tiene DialogueManager:
+      dialogueUI -> DialogueCanvas (UI/DialogueCanvas)
+      allDialogueNodes -> VACIO (hay que cargar los ScriptableObjects)
+      player -> Player (root)
+
+UI:
+  - Canvas root con 12 hijos: mapButton, backButton, moneyFeedback, timeFeedback,
+    cards, DialogueCanvas, etc.
+  - DialogueCanvas (hijo de UI):
+      DialogueUI con npcBubble y playerBubble referenciados
+      npcBubble (inactivo) - burbuja arriba de pantalla
+        - hijo: npcText (TextMeshProUGUI)
+      playerBubble (inactivo) - burbuja mas abajo
+        - hijo: payerText (TextMeshProUGUI) [nota: typo en nombre]
+      Ambos se activan/desactivan desde DialogueUI
+
+NPCs en escena:
+  - NPC_HospitalWorker (npcId: "hospital_worker", nombre: "Trabajador")
+    Tiene BoxCollider2D, OnMouseDown -> inicia dialogo
+    (falta agregar mas NPCs si se necesitan)
+
+JUGADOR:
+  - Player (root) con PlayerController, sin collider de interaccion
+  - Player (hijo de Map_) para el pathfinding en mapa
+
+=== SISTEMA DE TIEMPO ===
+- Cuenta regresiva. remainingMinutes arranca en 660 (11hs = 7am a 6pm)
+- Cada 1s real se descuenta 1 minuto
+- Viajar (caminar/bus) descuenta tiempo
+- Error en minijuego descuenta 2 min (ScheduleTime / SpendTime)
+- timeLabel muestra "HH : MM hs restantes"
+
+=== SISTEMA DE VERGUENZA ===
+- SetShameTimed(level, durationMinutes) activa verguenza por tiempo
+- Al terminar el timer, fade out en shameFadeOutMinutes (default 3)
+- shameActive / shameLevel usados por ShameBar.cs
+
+=== SUB-LOCATIONS (interiores de minijuegos) ===
+- PushSubLocation / PopSubLocation con stack
+- Push: oculta mapButton, muestra backButton
+- Pop: al llegar a 0, vuelve a mostrar mapButton
+
+=== LO QUE FALTA / PROXIMOS PASOS ===
+
+DIALOGOS (pendiente inmediato):
+  1. CREAR DialogueNode ScriptableObjects:
+     - Click derecho en Project -> Create -> Umbral -> Dialogue Node
+     - Completar campos: nodeId, npcId, npcLine, playerLine, nextNodeId
+     - Para "hospital_worker": nodeId "root", npcId "hospital_worker"
+  2. CARGAR nodos en DialogueManager.allDialogueNodes (arrastrar en Inspector)
+  3. Agregar mas NPCs a la escena si hace falta
+  4. Entender como funciona el flujo de click (DialogueUI.Update: click -> OnNpcClicked -> OnPlayerClicked -> ciclo)
+
+OTROS PENDIENTES:
+  - day_1.unity y day_3.unity vacias - armar GameManager cuando corresponda
+  - Sistema de verguenza poco explotado (solo se usa en DoorSelector)
+  - No hay sistema de guardado
+  - MapManager.cs es esqueleto
+  - Carpeta Documents/ vacia (para lore?)
