@@ -4,7 +4,7 @@ public class NPC : MonoBehaviour
 {
     [SerializeField] private string npcId;
     [SerializeField] private string npcName;
-    [SerializeField] private Color hoverColor = new Color(0.85f, 0.85f, 0.85f, 1f);
+    [SerializeField] private float hoverDarkenAmount = 0.85f;
 
     private SpriteRenderer sr;
     private Color defaultColor;
@@ -16,13 +16,17 @@ public class NPC : MonoBehaviour
     private void Awake()
     {
         sr = GetComponentInChildren<SpriteRenderer>();
-        animator = GetComponent<Animator>();
+        animator = GetComponentInChildren<Animator>();
         defaultColor = sr.color;
     }
 
     private void OnMouseEnter()
     {
-        sr.color = hoverColor;
+        Color c = defaultColor;
+        c.r *= hoverDarkenAmount;
+        c.g *= hoverDarkenAmount;
+        c.b *= hoverDarkenAmount;
+        sr.color = c;
     }
 
     private void OnMouseExit()

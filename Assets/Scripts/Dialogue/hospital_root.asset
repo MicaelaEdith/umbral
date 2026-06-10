@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 071920c32a6056558a742a9ffe847d34, type: 3}
   m_Name: hospital_root
   m_EditorClassIdentifier: Assembly-CSharp::DialogueNode
-  nodeId: node_00
+  nodeId: root
   npcId: hospital_worker
   npcLine: "Est\xE1 indicado en el cartel"
   playerLine: Gracias

@@ -51,7 +51,7 @@ MINIGAMES:
     NpcTerminal.cs       - NPC juega automaticamente
     Ticket.cs            - Objeto coleccionable al completar
 
-DIALOGOS (NUEVO - pendiente de setup):
+DIALOGOS:
   DialogueManager.cs - Singleton. Orquesta dialogo por NPC.
     - Tiene array allDialogueNodes (ScriptableObjects)
     - Tiene referencia a DialogueUI y al Player
@@ -66,10 +66,15 @@ DIALOGOS (NUEVO - pendiente de setup):
     - Estados: Hidden / ShowingNpc / ShowingPlayer
     - NPC clickeado -> avanza a linea del jugador
     - Player clickeado -> avanza al siguiente nodo o cierra
-  NPC.cs - Componente en personajes del mundo
-    - Campos: npcId, npcName, hoverColor
+  NPC.cs - Componente unico y generico para todos los NPCs.
+    - Campos: npcId, npcName, hoverDarkenAmount (float, default 0.85)
+    - Encuentra SpriteRenderer y Animator via GetComponentInChildren
+    - OnMouseEnter: oscurece el color del sprite (multiplica RGB x hoverDarkenAmount, preserva alpha)
+    - OnMouseExit: restaura color original
     - OnMouseDown() -> DialogueManager.Instance.StartDialogue(this)
-    - PlayTalkAnimation() / PlayIdleAnimation() con triggers de Animator
+    - PlayTalkAnimation() -> animator.SetTrigger("Talk")
+    - PlayIdleAnimation() -> animator.SetTrigger("Idle")
+    - Sirve para todos los NPCs, no necesita heredarse ni modificarse
 
 === SETUP ACTUAL EN day_2.unity ===
 
@@ -93,8 +98,15 @@ UI:
 
 NPCs en escena:
   - NPC_HospitalWorker (npcId: "hospital_worker", nombre: "Trabajador")
-    Tiene BoxCollider2D, OnMouseDown -> inicia dialogo
-    (falta agregar mas NPCs si se necesitan)
+    Estructura:
+      NPC_HospitalWorker (root)
+        - NPC.cs
+        - BoxCollider2D
+        - sprite (child)
+            - SpriteRenderer (personaje_01.png)
+            - Animator (asignar controller manualmente)
+    NOTA: El Animator va en el child "sprite", no en el root.
+    NPC.cs ya busca el Animator con GetComponentInChildren.
 
 JUGADOR:
   - Player (root) con PlayerController, sin collider de interaccion
@@ -117,20 +129,53 @@ JUGADOR:
 - Push: oculta mapButton, muestra backButton
 - Pop: al llegar a 0, vuelve a mostrar mapButton
 
+=== ANIMACIONES DE NPCs (WORKFLOW) ===
+Las animaciones se crean manualmente en Unity Editor, NO por script.
+
+Proceso para cada NPC:
+  1. Seleccionar el child "sprite" del NPC en la escena
+  2. Window > Animation > Animation (Ctrl+6) -> Create -> guardar .anim
+  3. Crear dos animaciones:
+     - Idle: un solo keyframe con la imagen estatica (personaje_01.png)
+     - Talk: alterna entre imagen normal y de apuntar (personaje_01.png <-> personaje_01a.png)
+  4. Crear Animator Controller: Create > Animator Controller
+  5. Agregar dos parametros Trigger: "Talk" e "Idle"
+  6. Agregar los dos estados (Idle, Talk) con sus .anim
+  7. Transiciones:
+     - Idle -> Talk: sin Has Exit Time, condicion: Talk
+     - Talk -> Idle: sin Has Exit Time, condicion: Idle
+  8. Asignar controller al Animator del child "sprite"
+
+NOTA: El Animator Controller debe crearse desde cero si Unity crashea.
+Los parametros deben ser TRIGGERs, no Bools.
+Condiciones de transicion: el parametro debe estar SELECCIONADO explicitamente,
+no dejarlo en blanco (error: "uses parameter which does not exist in controller").
+
+=== SPRITES DE NPCs ===
+- personaje_01.png (235x741) - Sprite normal/Idle
+- personaje_01a.png (369x741) - Sprite apuntando (usar en animacion Talk)
+Ambos en Assets/img/npc/
+
 === LO QUE FALTA / PROXIMOS PASOS ===
 
-DIALOGOS (pendiente inmediato):
-  1. CREAR DialogueNode ScriptableObjects:
-     - Click derecho en Project -> Create -> Umbral -> Dialogue Node
-     - Completar campos: nodeId, npcId, npcLine, playerLine, nextNodeId
-     - Para "hospital_worker": nodeId "root", npcId "hospital_worker"
-  2. CARGAR nodos en DialogueManager.allDialogueNodes (arrastrar en Inspector)
-  3. Agregar mas NPCs a la escena si hace falta
-  4. Entender como funciona el flujo de click (DialogueUI.Update: click -> OnNpcClicked -> OnPlayerClicked -> ciclo)
+PENDIENTE (sesion actual):
+  1. Re-crear Animator Controller + animaciones en Unity (se perdio por crash)
+  2. Asignarlo al child "sprite" del NPC_HospitalWorker
+  3. Verificar que DialogueManager llame a PlayTalkAnimation/PlayIdleAnimation
 
-OTROS PENDIENTES:
+PENDIENTE GENERAL:
   - day_1.unity y day_3.unity vacias - armar GameManager cuando corresponda
   - Sistema de verguenza poco explotado (solo se usa en DoorSelector)
   - No hay sistema de guardado
   - MapManager.cs es esqueleto
   - Carpeta Documents/ vacia (para lore?)
+
+=== CAMBIOS RECIENTES ===
+- NPC.cs: hoverColor (Color fijo) reemplazado por hoverDarkenAmount (float, default 0.85)
+- NPC.cs: OnMouseEnter ahora oscurece multiplicando RGB, preservando alpha
+- NPC.cs: GetComponent<Animator>() -> GetComponentInChildren<Animator>()
+- NPC.cs: simplificado, un solo script generico para todos los NPCs
+- Se descarto el Editor script (CreateNPCAnimations.cs) - overengineering
+- Workflow definido: animaciones creadas manualmente en Unity Editor
+- Experimento: Unity crasheo al configurar transiciones con parametro vacio en Animator
+- .gitignore actualizado: excluye contexto.txt

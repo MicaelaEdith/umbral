@@ -4092,6 +4092,7 @@ MonoBehaviour:
   minigameObject: {fileID: 316643621}
   canActivate: 0
   mapButton: {fileID: 159533944}
+  npcToHide: {fileID: 1439045006}
   hoverColor: {r: 0.8693888, g: 0.8693888, b: 0.8693888, a: 0.7254902}
 --- !u!1 &389234789
 GameObject:
@@ -5824,6 +5825,7 @@ GameObject:
   m_Component:
   - component: {fileID: 523377440}
   - component: {fileID: 523377441}
+  - component: {fileID: 523377442}
   m_Layer: 0
   m_Name: sprite
   m_TagString: Untagged
@@ -5841,8 +5843,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.44, y: 1.28, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.62938, y: 0.62938, z: 0.62938}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1439045007}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5895,8 +5897,8 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 5
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 75f5f34dc1b5347e0b8351032682f224, type: 3}
-  m_Color: {r: 1, g: 0.19339621, b: 0.19339621, a: 1}
+  m_Sprite: {fileID: 21300000, guid: 03c4b53a4bf2ed68689216b69b9004a5, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -5905,6 +5907,28 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!95 &523377442
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 523377439}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: ddf9a40a0e52e8bfb861c8e0409313b3, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &530939638
 GameObject:
   m_ObjectHideFlags: 0
@@ -6024,8 +6048,8 @@ Transform:
   m_GameObject: {fileID: 537040160}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.43, y: 2.07, z: 0}
-  m_LocalScale: {x: 1.5601, y: 1.6537608, z: 1}
+  m_LocalPosition: {x: 1.4, y: 2.05, z: 0}
+  m_LocalScale: {x: 0.92, y: 0.9427263, z: 0.57005}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1825341552}
@@ -6064,8 +6088,8 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.000007867813, y: -0.000017404556}
-  m_Size: {x: 1.0000001, y: 2.0000002}
+  m_Offset: {x: -0.003384096, y: 0.028646166}
+  m_Size: {x: 1.338484, y: 3.2121155}
   m_Direction: 0
 --- !u!212 &537040163
 SpriteRenderer:
@@ -6116,7 +6140,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 7
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -9095717837082945937, guid: 207ee8102dd4143d288186ef0be518ee, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 275edd7a3536df148b3fc927a34ab5fc, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_FlipX: 0
   m_FlipY: 0
@@ -8137,7 +8161,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.7019608}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.92941177}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -11187,6 +11211,7 @@ MonoBehaviour:
   minigameObject: {fileID: 681453634}
   canActivate: 1
   mapButton: {fileID: 159533944}
+  npcToHide: {fileID: 1439045006}
   hoverColor: {r: 0.8693888, g: 0.8693888, b: 0.8693888, a: 0.7254902}
 --- !u!61 &984406132
 BoxCollider2D:
@@ -12466,9 +12491,9 @@ Transform:
   m_GameObject: {fileID: 1072708289}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.02, y: 2.96, z: 0}
-  m_LocalScale: {x: 1.5601, y: 1.6537608, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalPosition: {x: -0.98, y: 2.85, z: 0}
+  m_LocalScale: {x: 0.90000004, y: 0.95403165, z: 0.5768861}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1825341552}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -12506,8 +12531,8 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.000007867813, y: -0.000017404556}
-  m_Size: {x: 1.0000001, y: 2.0000002}
+  m_Offset: {x: -0.00515465, y: 0.060210716}
+  m_Size: {x: 1.1844292, y: 3.0429556}
   m_Direction: 0
 --- !u!212 &1072708292
 SpriteRenderer:
@@ -12558,7 +12583,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 7
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -9095717837082945937, guid: 207ee8102dd4143d288186ef0be518ee, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 7d3f198be8422e7fe9a328222f3b5e09, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_FlipX: 0
   m_FlipY: 0
@@ -13669,7 +13694,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4278848010
-  m_fontColor: {r: 0.03773582, g: 0.03773582, b: 0.03773582, a: 1}
+  m_fontColor: {r: 0.9164681, g: 0.9164681, b: 0.9164681, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -13686,8 +13711,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 28
-  m_fontSizeBase: 28
+  m_fontSize: 32
+  m_fontSizeBase: 32
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -15566,7 +15591,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.7019608}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.92941177}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -16659,8 +16684,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 4.03, y: 1.09, z: 0}
-  m_LocalScale: {x: 1.5601, y: 1.6537608, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.92, y: 0.97523236, z: 0.5897058}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1825341552}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -16698,8 +16723,8 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.000007867813, y: -0.000017404556}
-  m_Size: {x: 1.0000001, y: 2.0000002}
+  m_Offset: {x: 0.03353125, y: 0.03819992}
+  m_Size: {x: 1.3168653, y: 3.312165}
   m_Direction: 0
 --- !u!212 &1340559543
 SpriteRenderer:
@@ -16750,7 +16775,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 7
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -9095717837082945937, guid: 207ee8102dd4143d288186ef0be518ee, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 6de35e7828238ad2cb50c38b5fc145aa, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_FlipX: 0
   m_FlipY: 0
@@ -17491,6 +17516,7 @@ GameObject:
   - component: {fileID: 1439045007}
   - component: {fileID: 1439045009}
   - component: {fileID: 1439045008}
+  - component: {fileID: 1439045010}
   m_Layer: 0
   m_Name: NPC_HospitalWorker
   m_TagString: Untagged
@@ -17507,8 +17533,8 @@ Transform:
   m_GameObject: {fileID: 1439045006}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.56, y: -1.23, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: -8.79, y: -3.84, z: 0}
+  m_LocalScale: {x: 0.91487193, y: 0.91487193, z: 0.91487193}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 523377440}
@@ -17528,7 +17554,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NPC
   npcId: hospital_worker
   npcName: Trabajador
-  hoverColor: {r: 1, g: 1, b: 1, a: 0.15}
+  hoverDarkenAmount: 0.85
 --- !u!61 &1439045009
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -17563,18 +17589,77 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: -0.026088804, y: 1.3234072}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 3.69, y: 7.41}
+    newSize: {x: 3.69, y: 7.41}
+    adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1.2183285, y: 4.239506}
   m_EdgeRadius: 0
+--- !u!212 &1439045010
+SpriteRenderer:
+  serializedVersion: 2
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1439045006}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_Sprite: {fileID: 21300000, guid: 03c4b53a4bf2ed68689216b69b9004a5, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 3.69, y: 7.41}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_SpriteSortPoint: 0
 --- !u!1 &1440568716
 GameObject:
   m_ObjectHideFlags: 0
@@ -23109,7 +23194,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DialogueManager
   dialogueUI: {fileID: 564000770}
-  allDialogueNodes: []
+  allDialogueNodes:
+  - {fileID: 11400000, guid: 6702699ffc4277da4820c2a40e5c7f77, type: 2}
   player: {fileID: 794637700}
 --- !u!1 &1874771658
 GameObject:
@@ -24476,8 +24562,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 28
-  m_fontSizeBase: 28
+  m_fontSize: 32
+  m_fontSizeBase: 32
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
