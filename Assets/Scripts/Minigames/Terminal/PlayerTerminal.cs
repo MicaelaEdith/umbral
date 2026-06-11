@@ -130,9 +130,6 @@ public class PlayerTerminal : MonoBehaviour
         if (triggerToEnable != null)
             triggerToEnable.SetCanActivate(true);
 
-        if (GameManager.Instance != null)
-            GameManager.Instance.shameActive = true;
-
         if (ticketButton != null)
             ticketButton.SetActive(true);
 

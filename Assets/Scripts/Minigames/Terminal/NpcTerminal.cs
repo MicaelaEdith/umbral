@@ -29,9 +29,6 @@ public class NpcTerminal : MonoBehaviour
                     monitors[i].SetCorrectSequence(GenerateMonitor0Sequence());
 
                 yield return StartCoroutine(monitors[i].AutoExecute(minDelay, maxDelay));
-
-                float pause = Random.Range(monitorPauseMin, monitorPauseMax);
-                yield return new WaitForSeconds(pause);
             }
 
             float cyclePause = Random.Range(cyclePauseMin, cyclePauseMax);

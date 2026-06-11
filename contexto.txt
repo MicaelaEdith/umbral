@@ -181,3 +181,6 @@ PENDIENTE (proxima sesion):
 - GameManager.cs: agregado shameFlashCooldown — TimeFeedback.Flash() cada 3 ticks acelerados
 - NPC.cs: PlayTalkAnimation/PlayIdleAnimation ahora hacen ResetTrigger del trigger contrario antes de SetTrigger
 - Correcion: animacion de Talk se cortaba al iniciar dialogo por trigger residual de Idle
+- NpcTerminal.cs: eliminada pausa (monitorPauseMin/Max) entre monitores — ahora pasa instantaneamente al siguiente
+- PlayerTerminal.cs: shameActive = true reemplazado por SetShameTimed(0.25f, 10) — la verguenza ahora tiene timer y fade-out, no queda pegada para siempre
+- PlayerTerminal.cs: eliminada la activacion de verguenza al recolectar ticket — el terminal ya no penaliza al completarse
