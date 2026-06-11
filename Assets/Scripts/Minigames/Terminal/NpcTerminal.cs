@@ -4,12 +4,15 @@ using System.Collections;
 public class NpcTerminal : MonoBehaviour
 {
     [SerializeField] private TerminalMonitor[] monitors;
-    [SerializeField] private float minDelay = 0.5f;
-    [SerializeField] private float maxDelay = 2f;
+    [SerializeField] private float minDelay = 0.3f;
+    [SerializeField] private float maxDelay = 1.5f;
+    [SerializeField] private float monitorPauseMin = 0.5f;
+    [SerializeField] private float monitorPauseMax = 2f;
+    [SerializeField] private float cyclePauseMin = 1f;
+    [SerializeField] private float cyclePauseMax = 3f;
 
-    [Header("Monitor 0 — biased button")]
+    [Header("Monitor 0 — correct button")]
     [SerializeField] private int correctButtonIndex = 2;
-    [SerializeField][Range(0f, 1f)] private float correctBias = 0.8f;
 
     private void Start()
     {
@@ -27,31 +30,18 @@ public class NpcTerminal : MonoBehaviour
 
                 yield return StartCoroutine(monitors[i].AutoExecute(minDelay, maxDelay));
 
-                float pause = Random.Range(minDelay, maxDelay);
+                float pause = Random.Range(monitorPauseMin, monitorPauseMax);
                 yield return new WaitForSeconds(pause);
             }
 
-            yield return new WaitForSeconds(Random.Range(1f, 3f));
+            float cyclePause = Random.Range(cyclePauseMin, cyclePauseMax);
+            yield return new WaitForSeconds(cyclePause);
         }
     }
 
     private int[] GenerateMonitor0Sequence()
     {
         int okIndex = monitors[0].buttons.Length - 1;
-        int chosen;
-
-        if (Random.value < correctBias)
-        {
-            chosen = correctButtonIndex;
-        }
-        else
-        {
-            do
-            {
-                chosen = Random.Range(0, monitors[0].buttons.Length - 1);
-            } while (chosen == correctButtonIndex);
-        }
-
-        return new int[] { chosen, okIndex };
+        return new int[] { correctButtonIndex, okIndex };
     }
 }

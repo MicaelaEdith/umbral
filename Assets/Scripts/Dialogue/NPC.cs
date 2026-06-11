@@ -42,12 +42,18 @@ public class NPC : MonoBehaviour
     public void PlayTalkAnimation()
     {
         if (animator != null)
+        {
+            animator.ResetTrigger("Idle");
             animator.SetTrigger("Talk");
+        }
     }
 
     public void PlayIdleAnimation()
     {
         if (animator != null)
+        {
+            animator.ResetTrigger("Talk");
             animator.SetTrigger("Idle");
+        }
     }
 }

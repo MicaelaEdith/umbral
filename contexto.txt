@@ -72,8 +72,9 @@ DIALOGOS:
     - OnMouseEnter: oscurece el color del sprite (multiplica RGB x hoverDarkenAmount, preserva alpha)
     - OnMouseExit: restaura color original
     - OnMouseDown() -> DialogueManager.Instance.StartDialogue(this)
-    - PlayTalkAnimation() -> animator.SetTrigger("Talk")
-    - PlayIdleAnimation() -> animator.SetTrigger("Idle")
+    - PlayTalkAnimation() -> ResetTrigger("Idle") + SetTrigger("Talk")
+    - PlayIdleAnimation() -> ResetTrigger("Talk") + SetTrigger("Idle")
+    - ResetTrigger previene triggers residuales que corten la animacion
     - Sirve para todos los NPCs, no necesita heredarse ni modificarse
 
 === SETUP ACTUAL EN day_2.unity ===
@@ -123,6 +124,8 @@ JUGADOR:
 - SetShameTimed(level, durationMinutes) activa verguenza por tiempo
 - Al terminar el timer, fade out en shameFadeOutMinutes (default 3)
 - shameActive / shameLevel usados por ShameBar.cs
+- Mientras shameActive == true, cada tick descuenta shameTimeMultiplier (default 2) minutos en vez de 1
+- El TimeFeedback.Flash() se dispara cada 3 ticks acelerados (shameFlashCooldown)
 
 === SUB-LOCATIONS (interiores de minijuegos) ===
 - PushSubLocation / PopSubLocation con stack
@@ -158,14 +161,9 @@ Ambos en Assets/img/npc/
 
 === LO QUE FALTA / PROXIMOS PASOS ===
 
-PENDIENTE (sesion actual):
-  1. Re-crear Animator Controller + animaciones en Unity (se perdio por crash)
-  2. Asignarlo al child "sprite" del NPC_HospitalWorker
-  3. Verificar que DialogueManager llame a PlayTalkAnimation/PlayIdleAnimation
-
-PENDIENTE GENERAL:
+PENDIENTE (proxima sesion):
+  - day_2.unity: cargar allDialogueNodes en DialogueManager (ScriptableObjects)
   - day_1.unity y day_3.unity vacias - armar GameManager cuando corresponda
-  - Sistema de verguenza poco explotado (solo se usa en DoorSelector)
   - No hay sistema de guardado
   - MapManager.cs es esqueleto
   - Carpeta Documents/ vacia (para lore?)
@@ -179,3 +177,7 @@ PENDIENTE GENERAL:
 - Workflow definido: animaciones creadas manualmente en Unity Editor
 - Experimento: Unity crasheo al configurar transiciones con parametro vacio en Animator
 - .gitignore actualizado: excluye contexto.txt
+- GameManager.cs: agregado shameTimeMultiplier (int, default 2) — acelera el tiempo mientras shame esta activo
+- GameManager.cs: agregado shameFlashCooldown — TimeFeedback.Flash() cada 3 ticks acelerados
+- NPC.cs: PlayTalkAnimation/PlayIdleAnimation ahora hacen ResetTrigger del trigger contrario antes de SetTrigger
+- Correcion: animacion de Talk se cortaba al iniciar dialogo por trigger residual de Idle

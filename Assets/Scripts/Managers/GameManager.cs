@@ -23,6 +23,8 @@ public class GameManager : MonoBehaviour
     [Range(0f, 1f)] public float shameLevel;
     public int shameTimerMinutes { get; private set; }
     [Range(0f, 1f)] public float timedShameOpacity = 0.85f;
+    [SerializeField] private int shameTimeMultiplier = 2;
+    private int shameFlashCooldown;
 
     [SerializeField, Range(1, 5)] private int shameFadeOutMinutes = 3;
     private int shameFadeOutRemaining;
@@ -66,9 +68,21 @@ public class GameManager : MonoBehaviour
         if (timeAccumulator >= REAL_SECONDS_PER_GAME_MINUTE)
         {
             timeAccumulator -= REAL_SECONDS_PER_GAME_MINUTE;
-            remainingMinutes--;
+
+            int minutesToDeduct = shameActive ? shameTimeMultiplier : 1;
+            remainingMinutes -= minutesToDeduct;
             if (remainingMinutes < 0) remainingMinutes = 0;
             UpdateTimeDisplay();
+
+            if (minutesToDeduct > 1)
+            {
+                shameFlashCooldown++;
+                if (shameFlashCooldown >= 3)
+                {
+                    shameFlashCooldown = 0;
+                    if (timeFeedback != null) timeFeedback.Flash();
+                }
+            }
 
             if (shameTimerMinutes > 0)
             {

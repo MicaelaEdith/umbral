@@ -59,6 +59,7 @@ public class DialogueManager : MonoBehaviour
     public void OnNpcClicked()
     {
         if (currentNode == null) return;
+        currentNPC.PlayIdleAnimation();
         dialogueUI.ShowPlayerLine(currentNode.PlayerLine);
     }
 
