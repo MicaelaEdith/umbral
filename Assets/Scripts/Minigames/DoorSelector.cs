@@ -4,6 +4,8 @@ public class DoorSelector : MonoBehaviour
 {
     [SerializeField] private bool isCorrect;
     [SerializeField] private Color hoverColor = new Color(1f, 1f, 1f, 0.2f);
+    [SerializeField] private MinigameTrigger triggerToReactivate;
+    [SerializeField] private GameObject secondTerminal;
 
     private SpriteRenderer sr;
     private Color defaultColor;
@@ -30,6 +32,15 @@ public class DoorSelector : MonoBehaviour
         {
             GameManager.Instance.ScheduleTime(2);
             GameManager.Instance.SetShameTimed(0.25f, 10);
+        }
+        else if (isCorrect)
+        {
+            if (triggerToReactivate != null)
+            {
+                triggerToReactivate.SetCanActivate(true);
+                if (secondTerminal != null)
+                    triggerToReactivate.SetMinigameObject(secondTerminal);
+            }
         }
 
         sr.color = defaultColor;

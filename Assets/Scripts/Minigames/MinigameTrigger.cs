@@ -42,6 +42,14 @@ public class MinigameTrigger : MonoBehaviour
     public void SetCanActivate(bool value)
     {
         canActivate = value;
+        if (spriteRenderer != null)
+            spriteRenderer.enabled = canActivate && (minigameObject == null || !minigameObject.activeSelf);
+    }
+
+    public void SetMinigameObject(GameObject newMinigame)
+    {
+        minigameObject = newMinigame;
+        wasMinigameActive = !(minigameObject != null && minigameObject.activeSelf);
     }
 
     public void NotifyClosed()

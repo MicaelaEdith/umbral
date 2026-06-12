@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: f09491f575a445b0da8888fc492c279b
+guid: 4635d7f5971741a0da0198d12277bad1
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -6603708940330275673
-    second: hospital_00okok_0
+      213: -2708691607675563289
+    second: personaje_01a_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -126,13 +126,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: hospital_00okok_0
+      name: personaje_01a_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 1376
-        height: 768
+        width: 369
+        height: 741
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -141,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 7acea8be4b9ea54a0800000000000000
-      internalID: -6603708940330275673
+      spriteID: 7e29a66855bc86ad0800000000000000
+      internalID: -2708691607675563289
       vertices: []
       indices: 
       edges: []
@@ -161,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      hospital_00okok_0: -6603708940330275673
+      personaje_01a_0: -2708691607675563289
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

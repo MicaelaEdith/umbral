@@ -1,8 +1,9 @@
-=== UMBRAL - Contexto de desarrollo ===
+=== UMBRAL - Contexto de desarrollo (unificado) ===
 
 GENERO: Novela visual / point-and-click con simulación de tiempo
-ENGINE: Unity 2D (URP)
-UBICACION: /home/micaelaedith/Documentos/umbral
+ENGINE: Unity 2D (URP), TextMeshPro, Input System
+UBICACION REAL: /home/micaelaedith/Documentos/desarrollo/umbral
+UBICACION VIEJA (errata en contexto anterior): /home/micaelaedith/Documentos/umbral
 
 === ESCENAS ===
 - day_1.unity (vacia, solo camara)
@@ -14,104 +15,74 @@ UBICACION: /home/micaelaedith/Documentos/umbral
 === ESTRUCTURA DE SCRIPTS (Assets/Scripts/) ===
 
 JEFE:
-  GameManager.cs - Singleton, maneja tiempo/dinero/ubicacion/verguenza/sub-locations
-  MapManager.cs  - Esqueleto sin usar
+  GameManager.cs - Singleton. Maneja tiempo/dinero/ubicacion/verguenza/sub-locations (stack).
+    Metodos: PushSubLocation, PopSubLocation, SetShameTimed, ScheduleTime
+    Campos: btn_map, btn_back, allBuildings[], shameActive, shameLevel, shameTimerMinutes,
+            timedShameOpacity, IsShameFadingOut, shameTimeMultiplier (default 2),
+            shameFlashCooldown (cada 3 ticks acelerados dispara Flash())
+  MapManager.cs  - Esqueleto, solo tiene int location
 
 MAPA:
-  MapToggle.cs   - Abre vista de mapa (static IsOpen)
+  MapToggle.cs   - Abre vista de mapa (static IsOpen). Oculta player, se oculta a si mismo.
   MapClose.cs    - Cierra mapa, resetea MapToggle.IsOpen
-  Card.cs         - Opciones caminar/bus (gasta dinero en bus)
+  Card.cs         - Botones Walk/Bus. hover/press con EventTrigger. SetCurrentWaypoint solo al viajar.
   Destination.cs  - Objetos clicables en el mapa
   Waypoint.cs     - Nodos de grafo para pathfinding
-  PathDrawer.cs   - BFS pathfinding entre waypoints
+  PathDrawer.cs   - BFS pathfinding. CalculatePath ya NO modifica currentWaypoint.
 
 JUGADOR:
-  PlayerController.cs - Click-to-move
+  PlayerController.cs - Click-to-move. Bloqueado si DialogueManager.IsDialogueActive o MapToggle.IsOpen
 
 UI:
   MainMenu.cs       - Carga de escenas
-  ShameBar.cs       - Barra de verguenza (celeste -> rojo)
+  ShameBar.cs       - Barra de verguenza fullscreen. Normal: alpha 0.27. Timed: alpha 0.85 con pulso
+                      75%-100%. Fadeout en shameFadeOutMinutes (default 3).
   MoneyFeedback.cs  - Parpadeo rojo + escala al gastar dinero
+  TimeFeedback.cs   - Idem para label de tiempo (penalizaciones)
 
 MAPA MUNDO:
-  BuildingInterior.cs - Activa/desactiva interiores de edificios
+  BuildingInterior.cs - Activa/desactiva interiores de edificios por buildingName
 
 MINIGAMES:
-  MinigameTrigger.cs  - Trigger base: se oculta cuando minijuego activo o mapa abierto
-  RedirectButton.cs   - Boton de salida de minijuego
-  DoorSelector.cs     - Elegir puerta correcta; fallar descuenta 2min + verguenza
-  DoorTrigger.cs      - Abre minijuego de puertas, usa PushSubLocation
+  MinigameTrigger.cs  - Trigger base. Se oculta cuando minijuego activo o mapa abierto.
+                        Tiene canActivate (bool), minigameObject, mapButton, npcToHide.
+                        Metodos publicos: SetCanActivate(), SetMinigameObject(), NotifyClosed().
+  RedirectButton.cs   - Boton de salida de signboard. Llama a director.SelectOption(index),
+                        oculta minigameParent, muestra mapButton.
   Signboard/
-    SignSection.cs    - Secciones del cartel con hover/press alpha
+    SignSection.cs    - Secciones del cartel con hover alpha. Resetea color en OnEnable.
+    SignboardDirector.cs - Recibe SelectOption(index). index 0 o 2 -> rightRoom, 1 o 3 -> leftRoom.
+                         Activa sala elegida, llama PushSubLocation(selectedRoom, previousRoom).
+  DoorTrigger.cs      - Trigger que abre minigame de puertas. Al hacer click:
+                        minigame.SetActive(true) + PushSubLocation(minigame).
+                        Sprite invisible con hover alpha 0.15.
+  DoorSelector.cs     - Logica de puerta individual en el minigame_2 (tercer minijuego, "Puertas").
+                        Ver detalle abajo.
   Terminal/
     TerminalTrigger.cs   - Trigger del terminal (hereda MinigameTrigger)
-    ClickableButton.cs   - Boton interactivo del terminal
+    ClickableButton.cs   - Boton interactivo del terminal (hover/press visual)
     TerminalMonitor.cs   - Monitor con puzzle de secuencia
-    PlayerTerminal.cs    - Orquesta minijuego para el jugador
-    NpcTerminal.cs       - NPC juega automaticamente
-    Ticket.cs            - Objeto coleccionable al completar
+    PlayerTerminal.cs    - Orquesta el minijuego para el jugador. Secuencia de monitores.
+                           Error: ScheduleTime(2) + Debug.Log. TicketOnComplete: desactiva trigger,
+                           activa otro trigger, muestra ticketButton.
+    NpcTerminal.cs       - NPC juega automaticamente con bias. Sin pausa entre monitores.
+                           Ciclo infinito: monitor 0 (secuencia fija) -> resto -> pausa de 1-3s.
+    Ticket.cs            - Objeto coleccionable al completar terminal. Evento OnCollected.
 
 DIALOGOS:
   DialogueManager.cs - Singleton. Orquesta dialogo por NPC.
-    - Tiene array allDialogueNodes (ScriptableObjects)
-    - Tiene referencia a DialogueUI y al Player
-    - Busca nodos por npcId, empieza por "root"
-    - Metodos: StartDialogue(), OnNpcClicked(), OnPlayerClicked(), EndDialogue()
-    - En el medio del dialogo desactiva el Player
-  DialogueNode.cs - ScriptableObject. Datos de un nodo de dialogo.
-    - CreateAssetMenu: "Umbral/Dialogue Node"
-    - Campos: nodeId, npcId, npcLine, playerLine, nextNodeId
-    - Si nextNodeId vacio -> IsLast = true
-  DialogueUI.cs - Muestra burbujas NPC/jugador, avanza con click
-    - Estados: Hidden / ShowingNpc / ShowingPlayer
-    - NPC clickeado -> avanza a linea del jugador
-    - Player clickeado -> avanza al siguiente nodo o cierra
-  NPC.cs - Componente unico y generico para todos los NPCs.
-    - Campos: npcId, npcName, hoverDarkenAmount (float, default 0.85)
-    - Encuentra SpriteRenderer y Animator via GetComponentInChildren
-    - OnMouseEnter: oscurece el color del sprite (multiplica RGB x hoverDarkenAmount, preserva alpha)
-    - OnMouseExit: restaura color original
-    - OnMouseDown() -> DialogueManager.Instance.StartDialogue(this)
-    - PlayTalkAnimation() -> ResetTrigger("Idle") + SetTrigger("Talk")
-    - PlayIdleAnimation() -> ResetTrigger("Talk") + SetTrigger("Idle")
-    - ResetTrigger previene triggers residuales que corten la animacion
-    - Sirve para todos los NPCs, no necesita heredarse ni modificarse
-
-=== SETUP ACTUAL EN day_2.unity ===
-
-GAMEMANAGER (root):
-  - Componente GameManager con todas las referencias (moneyFeedback, timeFeedback, etc.)
-  - Mismo GameObject tiene DialogueManager:
-      dialogueUI -> DialogueCanvas (UI/DialogueCanvas)
-      allDialogueNodes -> VACIO (hay que cargar los ScriptableObjects)
-      player -> Player (root)
-
-UI:
-  - Canvas root con 12 hijos: mapButton, backButton, moneyFeedback, timeFeedback,
-    cards, DialogueCanvas, etc.
-  - DialogueCanvas (hijo de UI):
-      DialogueUI con npcBubble y playerBubble referenciados
-      npcBubble (inactivo) - burbuja arriba de pantalla
-        - hijo: npcText (TextMeshProUGUI)
-      playerBubble (inactivo) - burbuja mas abajo
-        - hijo: payerText (TextMeshProUGUI) [nota: typo en nombre]
-      Ambos se activan/desactivan desde DialogueUI
-
-NPCs en escena:
-  - NPC_HospitalWorker (npcId: "hospital_worker", nombre: "Trabajador")
-    Estructura:
-      NPC_HospitalWorker (root)
-        - NPC.cs
-        - BoxCollider2D
-        - sprite (child)
-            - SpriteRenderer (personaje_01.png)
-            - Animator (asignar controller manualmente)
-    NOTA: El Animator va en el child "sprite", no en el root.
-    NPC.cs ya busca el Animator con GetComponentInChildren.
-
-JUGADOR:
-  - Player (root) con PlayerController, sin collider de interaccion
-  - Player (hijo de Map_) para el pathfinding en mapa
+    allDialogueNodes (ScriptableObject[]), referencia a DialogueUI y Player.
+    Busca nodos por npcId, arranca con "root". Secuencia: NPC line -> click -> Player line -> click -> next.
+    IsDialogueActive bloquea PlayerController.
+  DialogueNode.cs - ScriptableObject. CreateAssetMenu "Umbral/Dialogue Node".
+    Campos: nodeId, npcId, npcLine, playerLine, nextNodeId. nextNodeId vacio = ultimo nodo.
+  DialogueUI.cs - Burbuja azul (npcBubble + npcText) y beige (playerBubble + playerText).
+    Estados: Hidden / ShowingNpc / ShowingPlayer. Click avanza.
+  NPC.cs - Componente unico generico. npcId, npcName, hoverDarkenAmount (float, default 0.85).
+    GetComponentInChildren<SpriteRenderer> y Animator.
+    OnMouseEnter: oscurece RGB multiplicando por hoverDarkenAmount (preserva alpha).
+    OnMouseExit: restaura color. OnMouseDown: DialogueManager.StartDialogue(this).
+    PlayTalkAnimation/PlayIdleAnimation: ResetTrigger del opuesto + SetTrigger.
 
 === SISTEMA DE TIEMPO ===
 - Cuenta regresiva. remainingMinutes arranca en 660 (11hs = 7am a 6pm)
@@ -125,62 +96,176 @@ JUGADOR:
 - Al terminar el timer, fade out en shameFadeOutMinutes (default 3)
 - shameActive / shameLevel usados por ShameBar.cs
 - Mientras shameActive == true, cada tick descuenta shameTimeMultiplier (default 2) minutos en vez de 1
-- El TimeFeedback.Flash() se dispara cada 3 ticks acelerados (shameFlashCooldown)
+- TimeFeedback.Flash() cada 3 ticks acelerados (shameFlashCooldown)
 
 === SUB-LOCATIONS (interiores de minijuegos) ===
-- PushSubLocation / PopSubLocation con stack
-- Push: oculta mapButton, muestra backButton
-- Pop: al llegar a 0, vuelve a mostrar mapButton
+- PushSubLocation(newLocation, backTarget=null): pushea backTarget (o currentSubRoom) al stack,
+  currentSubRoom = newLocation. Oculta mapButton, muestra backButton.
+- PopSubLocation(): desactiva currentSubRoom, activa popeada del stack. Si stack vacio: oculta
+  backButton, muestra mapButton.
 
-=== ANIMACIONES DE NPCs (WORKFLOW) ===
-Las animaciones se crean manualmente en Unity Editor, NO por script.
+=== UBICACIONES (buildings) ===
+GameManager.allBuildings[] (BuildingInterior[]): house, hospital, etc. (5 buildings en day_2)
+Hospital (unico con sub-locations): leftRoom / rightRoom (activados por SignboardDirector),
+previousRoom (vuelta a hospital principal).
 
-Proceso para cada NPC:
-  1. Seleccionar el child "sprite" del NPC en la escena
-  2. Window > Animation > Animation (Ctrl+6) -> Create -> guardar .anim
-  3. Crear dos animaciones:
-     - Idle: un solo keyframe con la imagen estatica (personaje_01.png)
-     - Talk: alterna entre imagen normal y de apuntar (personaje_01.png <-> personaje_01a.png)
-  4. Crear Animator Controller: Create > Animator Controller
-  5. Agregar dos parametros Trigger: "Talk" e "Idle"
-  6. Agregar los dos estados (Idle, Talk) con sus .anim
-  7. Transiciones:
-     - Idle -> Talk: sin Has Exit Time, condicion: Talk
-     - Talk -> Idle: sin Has Exit Time, condicion: Idle
-  8. Asignar controller al Animator del child "sprite"
+=== MINIGAMES ===
+Los 5 minijuegos planificados segun to-do.txt:
+  1. Terminal (Mecanicas ok - faltan cambiar imagenes)
+  2. Signboard / Cartel (Mecanicas ok - falta agregar imagen ticket)
+  3. Puertas / minigame_2 (Mecanica ok - faltan imagenes de NPC, sistema de dialogos para justificar verguenza)
+  4. Segunda terminal (por definir)
+  5. Maquina de golosinas / mj_06 (por definir - ya existe carpeta Assets/img/minijuegos/mj_06/)
 
-NOTA: El Animator Controller debe crearse desde cero si Unity crashea.
-Los parametros deben ser TRIGGERs, no Bools.
-Condiciones de transicion: el parametro debe estar SELECCIONADO explicitamente,
-no dejarlo en blanco (error: "uses parameter which does not exist in controller").
+=== MINIGAME_2 - PUERTAS (DoorSelector + DoorTrigger) ===
+
+DoorTrigger.cs:
+  - GameObject minigame (referencia al parent del minigame de puertas)
+  - Sprite invisible con hover alpha 0.15
+  - OnMouseDown: activa minigame, llama PushSubLocation(minigame)
+
+DoorSelector.cs:
+  - Componente en cada puerta (3 puertas)
+  - isCorrect (bool): una sola puerta correcta
+  - triggerToReactivate (MinigameTrigger): trigger a reactivar al acertar
+  - secondTerminal (GameObject): nuevo minigame object a asignar al trigger al acertar
+  - Sprite invisible con hover alpha 0.2
+  - Logica OnMouseDown:
+      * Si !isCorrect: ScheduleTime(2) + SetShameTimed(0.25f, 10)
+        (penaliza tiempo y activa verguenza temporal)
+      * Si isCorrect: triggerToReactivate.SetCanActivate(true),
+        y si secondTerminal != null, triggerToReactivate.SetMinigameObject(secondTerminal)
+        (permite acceder al siguiente minijuego)
+  - sr.color vuelve a defaultColor al final
+
+=== FLUJO TIPICO ===
+Casa -> mapa -> click hospital -> card -> Walk/Bus -> viaja a hospital.
+Hospital -> signboard -> elige opcion -> PushSubLocation(sala, hospital).
+Sala -> door trigger -> PushSubLocation(minigame_2).
+minigame_2 -> click puerta correcta -> reactiva trigger con secondTerminal.
+minigame_2 -> click puerta incorrecta -> -2min + verguenza 0.25 por 10min.
+Back desde cualquier sub-location -> PopSubLocation() -> vuelve escalon anterior.
+Si stack vacio: aparece btn_map.
+
+=== SETUP ACTUAL EN day_2.unity ===
+
+GAMEMANAGER (root):
+  - GameManager con referencias (moneyFeedback, timeFeedback, etc.)
+  - Mismo GO tiene DialogueManager: dialogueUI, allDialogueNodes, player
+
+UI:
+  - Canvas root con 12 hijos: mapButton, backButton, moneyFeedback, timeFeedback,
+    cards, DialogueCanvas, etc.
+  - DialogueCanvas (hijo de UI): DialogueUI con npcBubble y playerBubble
+
+NPCs en escena:
+  - NPC_HospitalWorker (npcId: "hospital_worker", nombre: "Trabajador")
+    NPC.cs en root, SpriteRenderer + Animator en child "sprite"
+
+JUGADOR:
+  - Player (root) con PlayerController
+  - Player (hijo de Map_) para pathfinding en mapa
 
 === SPRITES DE NPCs ===
 - personaje_01.png (235x741) - Sprite normal/Idle
 - personaje_01a.png (369x741) - Sprite apuntando (usar en animacion Talk)
 Ambos en Assets/img/npc/
 
+=== CARPETA NUEVA DE PERSONAJES (sin seguimiento) ===
+Assets/img/personajes/ - imagenes de personajes sin trackear
+
+=== ANIMACIONES DE NPCs (WORKFLOW) ===
+Las animaciones se crean manualmente en Unity Editor, NO por script.
+Para cada NPC: crear Idle (estatico) y Talk (alterna normal/apuntando).
+Animator Controller con triggers "Talk" e "Idle". Transiciones sin Has Exit Time.
+Condiciones de transicion: seleccionar parametro explicitamente (bug: si queda vacio, Unity crashea).
+
 === LO QUE FALTA / PROXIMOS PASOS ===
+- day_2.unity: cargar allDialogueNodes en DialogueManager (ScriptableObjects)
+- day_1.unity y day_3.unity: armar GameManager
+- No hay sistema de guardado
+- MapManager.cs es esqueleto
+- Minijuego 4 (segunda terminal) y 5 (maquina golosinas)
+- Faltan imagenes de NPC para minigame_2, sistema de dialogos para justificar verguenza
+- Carpeta Documents/ vacia (para lore?)
+- Assets/img/personajes/ sin trackear (nuevos assets de personajes)
 
-PENDIENTE (proxima sesion):
-  - day_2.unity: cargar allDialogueNodes en DialogueManager (ScriptableObjects)
-  - day_1.unity y day_3.unity vacias - armar GameManager cuando corresponda
-  - No hay sistema de guardado
-  - MapManager.cs es esqueleto
-  - Carpeta Documents/ vacia (para lore?)
-
-=== CAMBIOS RECIENTES ===
+=== CAMBIOS RECIENTES (commiteados) ===
 - NPC.cs: hoverColor (Color fijo) reemplazado por hoverDarkenAmount (float, default 0.85)
-- NPC.cs: OnMouseEnter ahora oscurece multiplicando RGB, preservando alpha
+- NPC.cs: OnMouseEnter oscurece multiplicando RGB, preservando alpha
 - NPC.cs: GetComponent<Animator>() -> GetComponentInChildren<Animator>()
 - NPC.cs: simplificado, un solo script generico para todos los NPCs
-- Se descarto el Editor script (CreateNPCAnimations.cs) - overengineering
+- Se descarto Editor script (CreateNPCAnimations.cs)
 - Workflow definido: animaciones creadas manualmente en Unity Editor
 - Experimento: Unity crasheo al configurar transiciones con parametro vacio en Animator
 - .gitignore actualizado: excluye contexto.txt
-- GameManager.cs: agregado shameTimeMultiplier (int, default 2) — acelera el tiempo mientras shame esta activo
-- GameManager.cs: agregado shameFlashCooldown — TimeFeedback.Flash() cada 3 ticks acelerados
+- GameManager.cs: agregado shameTimeMultiplier (int, default 2)
+- GameManager.cs: agregado shameFlashCooldown
 - NPC.cs: PlayTalkAnimation/PlayIdleAnimation ahora hacen ResetTrigger del trigger contrario antes de SetTrigger
-- Correcion: animacion de Talk se cortaba al iniciar dialogo por trigger residual de Idle
-- NpcTerminal.cs: eliminada pausa (monitorPauseMin/Max) entre monitores — ahora pasa instantaneamente al siguiente
-- PlayerTerminal.cs: shameActive = true reemplazado por SetShameTimed(0.25f, 10) — la verguenza ahora tiene timer y fade-out, no queda pegada para siempre
-- PlayerTerminal.cs: eliminada la activacion de verguenza al recolectar ticket — el terminal ya no penaliza al completarse
+- NpcTerminal.cs: eliminada pausa entre monitores (monitorPauseMin/Max)
+- PlayerTerminal.cs: shameActive = true reemplazado por SetShameTimed(0.25f, 10)
+- PlayerTerminal.cs: eliminada activacion de verguenza al recolectar ticket
+- DoorSelector.cs + MinigameTrigger.cs: reactivacion de trigger + cambio de minigameObject (ver cambios no commiteados)
+- font commit: SEBASTIAN_INFORMAL SDF.asset modificado
+
+=== CAMBIOS NO COMMITEADOS (working directory) ===
+Archivos modificados:
+  Assets/Scripts/Minigames/DoorSelector.cs:
+    - Agregados serializados: triggerToReactivate (MinigameTrigger), secondTerminal (GameObject)
+    - Al elegir puerta correcta (isCorrect): reactiva triggerToReactivate y le asigna
+      secondTerminal como nuevo minigameObject (permite encadenar minijuegos)
+  Assets/Scripts/Minigames/MinigameTrigger.cs:
+    - Agregado metodo publico SetMinigameObject(GameObject newMinigame)
+      (cambia la referencia del minigameObject en runtime)
+  Assets/Scenes/day_2.unity: modificada (refleja cambios de scripts + assets)
+  Assets/img/edificios/hospital/hospital_01.png: ELIMINADO (reemplazado por hospital_01ok.png)
+  Assets/img/edificios/hospital_00okok.png.meta: spriteMode cambiado de 2 (Multiple) a 1 (Single)
+  Assets/img/minijuegos/mj_01/cartelHospital.png: modificado (binario)
+  Assets/font/SEBASTIAN-INFORMAL/SEBASTIAN_INFORMAL SDF.asset: modificado
+
+Archivos nuevos (untracked):
+  Assets/img/minijuegos/mj_06/ (nuevo minijuego, maquina de golosinas)
+  Assets/img/personajes/ (assets de personajes nuevos)
+  Assets/_Recovery/0 (2).unity (auto-recovery de Unity)
+  contexto_umbral.txt (cots/font/SEBASTIAN-INFORMAL/SEBASTIAN_INFORMAL SDF.asset: modificado
+
+Archivos nuevos (untracked):
+  Assets/img/minijuegos/mj_06/ (nuevo minijuego, maquina de golosinas)
+  Assets/img/personajes/ (assets de personajes nuevos)
+  Assets/_Recovery/0 (2).unity (auto-recovery de Unity)
+  contexto_umbral.txt (contexto alternativo no commiteado)
+  to-do.txt (lista de pendientes)
+
+=== BUG: SPRITE/HOVER DEL TRIGGER REACTIVADO ===
+
+Al reutilizar el MinigameTrigger del terminal como lanzador del tercer minijuego
+(segunda terminal via DoorSelector), el sprite del trigger quedaba invisible y sin
+hover. Causa raiz:
+
+  MinigameTrigger.Update() trackea el estado activo del minigameObject mediante
+  wasMinigameActive. Cuando se llama a SetMinigameObject(secondTerminal), el nuevo
+  objeto esta inactivo (igual que el anterior), entonces la comparacion
+  "isActive == wasMinigameActive" da true y Update() retorna sin re-evaluar
+  spriteRenderer.enabled. El sprite se queda deshabilitado permanentemente, y sin
+  sprite no hay hover.
+
+Fix aplicado (Assets/Scripts/Minigames/MinigameTrigger.cs):
+  SetCanActivate(bool value):
+    Ahora actualiza directamente spriteRenderer.enabled ademas de canActivate:
+      spriteRenderer.enabled = canActivate && (minigameObject == null || !minigameObject.activeSelf)
+    Esto asegura que al reactivar el trigger el sprite aparezca inmediatamente.
+
+  SetMinigameObject(GameObject newMinigame):
+    Ahora forza la reevaluacion en el proximo Update reseteando wasMinigameActive
+    al valor opuesto del estado actual:
+      wasMinigameActive = !(minigameObject != null && minigameObject.activeSelf)
+    Esto garantiza que isActive != wasMinigameActive, y Update() ejecuta toda la
+    logica de sprite + npcToHide.
+
+=== NOTAS ===
+- contextos previos: existian contexto.txt (commiteado, 186 lineas) y contexto_umbral.txt
+  (untracked, 174 lineas). Este documento unifica ambos.
+- La logica de DoorSelector ahora permite encadenar minijuegos: al acertar la puerta
+  correcta, se reactiva el trigger de la sala y se le asigna un segundo terminal como
+  nuevo destino. Esto remplaza la logica anterior donde el trigger quedaba desactivado.
+- Los assets de hospital_01.png fueron reemplazados por hospital_01ok.png (ya trackeado).
