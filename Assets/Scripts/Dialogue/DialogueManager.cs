@@ -79,15 +79,20 @@ public class DialogueManager : MonoBehaviour
 
     private List<DialogueEntry> GetEntriesForProgress(DialogueNode[] nodes, int progress)
     {
-        var result = new List<DialogueEntry>();
+        int bestProgress = -1;
         foreach (var node in nodes)
-        {
             foreach (var entry in node.Entries)
-            {
-                if (entry.requiredProgress <= progress)
+                if (entry.requiredProgress <= progress && entry.requiredProgress > bestProgress)
+                    bestProgress = entry.requiredProgress;
+
+        var result = new List<DialogueEntry>();
+        if (bestProgress < 0) return result;
+
+        foreach (var node in nodes)
+            foreach (var entry in node.Entries)
+                if (entry.requiredProgress == bestProgress)
                     result.Add(entry);
-            }
-        }
+
         return result;
     }
 

@@ -5945,6 +5945,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TerminalTrigger
   minigameObject: {fileID: 316643621}
   canActivate: 0
+  hoverWhenDisabled: 1
   mapButton: {fileID: 159533944}
   npcToHide: {fileID: 1439045006}
   hoverColor: {r: 0.8693888, g: 0.8693888, b: 0.8693888, a: 0.7254902}
@@ -15344,6 +15345,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TerminalTrigger
   minigameObject: {fileID: 681453634}
   canActivate: 1
+  hoverWhenDisabled: 0
   mapButton: {fileID: 159533944}
   npcToHide: {fileID: 1439045006}
   hoverColor: {r: 0.6509434, g: 0.6509434, b: 0.6509434, a: 0.7647059}

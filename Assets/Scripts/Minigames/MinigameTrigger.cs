@@ -4,6 +4,7 @@ public class MinigameTrigger : MonoBehaviour
 {
     [SerializeField] private GameObject minigameObject;
     [SerializeField] private bool canActivate = true;
+    [SerializeField] private bool hoverWhenDisabled = false;
     [SerializeField] private GameObject mapButton;
     [SerializeField] private GameObject npcToHide;
     [SerializeField] private Color hoverColor = new Color(1f, 1f, 1f, 0.5f);
@@ -33,8 +34,9 @@ public class MinigameTrigger : MonoBehaviour
 
         if (spriteRenderer != null)
         {
-            spriteRenderer.enabled = canActivate && !isActive;
-            if (spriteRenderer.enabled)
+            bool showSprite = (canActivate || hoverWhenDisabled) && !isActive;
+            spriteRenderer.enabled = showSprite;
+            if (showSprite)
                 spriteRenderer.color = originalColor;
         }
     }
@@ -43,7 +45,10 @@ public class MinigameTrigger : MonoBehaviour
     {
         canActivate = value;
         if (spriteRenderer != null)
-            spriteRenderer.enabled = canActivate && (minigameObject == null || !minigameObject.activeSelf);
+        {
+            bool showSprite = (canActivate || hoverWhenDisabled) && (minigameObject == null || !minigameObject.activeSelf);
+            spriteRenderer.enabled = showSprite;
+        }
     }
 
     public void SetMinigameObject(GameObject newMinigame)
@@ -70,9 +75,10 @@ public class MinigameTrigger : MonoBehaviour
 
     private void OnMouseEnter()
     {
-        if (!canActivate || MapToggle.IsOpen) return;
+        if (MapToggle.IsOpen) return;
         if (spriteRenderer == null) return;
         if (minigameObject != null && minigameObject.activeSelf) return;
+        if (!canActivate && !hoverWhenDisabled) return;
         spriteRenderer.color = hoverColor;
     }
 
