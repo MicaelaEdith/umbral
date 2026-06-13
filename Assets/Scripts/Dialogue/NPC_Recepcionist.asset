@@ -17,6 +17,6 @@ MonoBehaviour:
   - requiredProgress: 0
     playerLine: "Buen d\xEDa, necesito hacer el apto f\xEDsico de mi hijo."
     npcLine: "Buen d\xEDa, debe sacar turno en la terminal."
-  - requiredProgress: 0
-    playerLine: Muchas gracias.
-    npcLine: 
+  - requiredProgress: 3
+    playerLine: "Hac\xEDa d\xF3nde tengo que ir para estudios?"
+    npcLine: SAque un turno de estudios en la terminal y vaya a la izquierda.

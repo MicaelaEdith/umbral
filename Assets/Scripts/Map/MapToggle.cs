@@ -16,12 +16,17 @@ public class MapToggle : MonoBehaviour
     [SerializeField]
     private GameObject player;
 
+    [SerializeField]
+    private GameObject[] npcs;
+
     public void OpenMap()
     {
         IsOpen = true;
         mapView.SetActive(true);
         closeButton.SetActive(true);
         player.SetActive(false);
+        foreach (GameObject npc in npcs)
+            npc.SetActive(false);
         gameObject.SetActive(false);
 
         PathDrawer drawer = FindFirstObjectByType<PathDrawer>();

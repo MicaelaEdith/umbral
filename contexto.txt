@@ -15,151 +15,115 @@ PRODUCTO: "Umbral" (PlayerSettings)
 === ESTRUCTURA DE SCRIPTS (Assets/Scripts/) ===
 
 Managers/
-  GameManager.cs (216 lines) - Singleton. questProgress (int) para dialogo progresivo, se incrementa al completar minijuegos.
+  GameManager.cs - Singleton. questProgress (int), ScheduleTime, SetShameTimed.
 
 Map/
-  MapManager.cs (7 lines) - Stub, solo int location.
+  MapManager.cs - Stub, solo int location.
 
 Dialogue/
-  DialogueManager.cs (102 lines) - Singleton. Al iniciar dialogo busca la entrada con requiredProgress mas alto <= questProgress para ese NPC, muestra playerLine primero.
-    OnPlayerClicked() -> muestra npcLine.
-    OnNpcClicked() -> termina dialogo.
-  DialogueNode.cs (19 lines) - ScriptableObject. CreateAssetMenu "Umbral/Dialogue Node".
-    DialogueEntry[]: cada entrada tiene requiredProgress (int), playerLine (string), npcLine (string).
-    Ya no usa nodeId/nextNodeId/IsLast.
-  DialogueUI.cs (68 lines) - Burbuja azul (NPC) y beige (player). Click, Enter o Space avanzan.
-    Bug fixed: ShowPlayerLine ahora recibe y guarda DialogueManager mgr (antes quedaba null).
-  NPC.cs (59 lines) - Componente unico generico con npcId, hoverDarkenAmount, animator triggers.
+  DialogueManager.cs - Singleton. Reproduce TODAS las entradas de un nodo
+    cuyo requiredProgress <= questProgress, secuencialmente.
+    StartDialogue(NPC) -> filtra por progress, reproduce playerLine[0] -> npcLine[0] -> ... -> EndDialogue.
+    PlayDialogueDirect(npcId, onComplete) -> reproduce todas las entradas del nodo.
+    OnPlayerClicked() -> muestra npcLine de la entrada actual.
+    OnNpcClicked() -> avanza a siguiente entrada (playerLine). Si no hay mas, EndDialogue.
+    EndDialogue() -> PlayIdleAnimation solo al final.
+  DialogueNode.cs - ScriptableObject. CreateAssetMenu "Umbral/Dialogue Node".
+    DialogueEntry[]: requiredProgress (int), playerLine (string), npcLine (string).
+  DialogueUI.cs - Burbuja azul (NPC) y beige (player). autoAdvanceDelay = 1.5s.
+    Click/Enter/Space saltan al instante.
+  NPC.cs - Componente generico con npcId, hoverDarkenAmount, Animator triggers.
 
 Player/
-  PlayerController.cs (41 lines) - Click-to-move. Bloqueado si IsDialogueActive.
+  PlayerController.cs - Click-to-move. Bloqueado si IsDialogueActive.
 
 Map/
-  MapToggle.cs (31 lines) - Abre mapa (static IsOpen). Oculta player, se oculta.
-  MapClose.cs (33 lines) - Cierra mapa, resetea IsOpen, oculta cards.
+  MapToggle.cs - Abre mapa (static IsOpen). Oculta player + NPCs.
+  MapClose.cs - Cierra mapa.
 
 UI/
-  MainMenu.cs (13 lines) - Carga de escenas.
-  ShameBar.cs (37 lines) - Overlay. Normal alpha 0.27. Timed: pulso 75%-100% hasta 0.85. Fadeout 3min.
-  MoneyFeedback.cs (62 lines) - Parpadeo rojo + escala al gastar dinero.
-  TimeFeedback.cs (62 lines) - Idem para label de tiempo (penalizaciones).
-  ToggleVisibility.cs (18 lines) - Util Show/Hide generico.
+  MainMenu.cs - Carga de escenas.
+  ShameBar.cs - Overlay. Timed: shame al 25% durante 6s en puertas erroneas.
+  MoneyFeedback.cs - Parpadeo rojo + escala.
+  TimeFeedback.cs - Idem para tiempo.
+  ToggleVisibility.cs - Util Show/Hide generico.
 
 Minigames/
-  MinigameTrigger.cs (84 lines) - Trigger base con canActivate, minigameObject, mapButton, npcToHide.
-    SetCanActivate() y SetMinigameObject() con reevaluacion forzada de sprite.
-  DoorTrigger.cs (36 lines) - Trigger con PushSubLocation.
-  DoorSelector.cs (52 lines) - 3 puertas. isCorrect: penaliza o reactiva trigger + cambia minigameObject.
-    ticketButton: oculta btn_ticket al ganar (para mostrarlo de nuevo en terminal 2).
-  RedirectButton.cs (21 lines) - Boton de salida de signboard.
-  Signboard/SignboardDirector.cs (24 lines) - 4 opciones -> leftRoom/rightRoom + PushSubLocation.
-  Signboard/SignSection.cs (35 lines) - Hover sections del cartel.
-  Terminal/TerminalTrigger.cs (5 lines) - Hereda MinigameTrigger.
-  Terminal/ClickableButton.cs (97 lines) - Boton con hover/press visual, IsCancel.
-  Terminal/TerminalMonitor.cs (105 lines) - Secuencia de botones, AutoExecute para NPC.
-  Terminal/PlayerTerminal.cs (171 lines) - Orquesta terminal para jugador. ScheduleTime(2) por error.
-    TicketOnComplete: desactiva trigger, activa otro, muestra ticketButton.
-    ticketUISprite (Sprite) y ticketDetailImage (Image): actualiza btn_ticket y detalle al recolectar.
-    bounds check: if (currentMonitorIndex >= monitors.Length) return; en OnButtonClicked.
-  Terminal/NpcTerminal.cs (44 lines) - NPC auto-play con bias y ciclos.
-  Terminal/Ticket.cs (11 lines) - Collectible con evento OnCollected.
+  MinigameTrigger.cs - Trigger base: canActivate, minigameObject, mapButton, npcToHide.
+    SetCanActivate() y SetMinigameObject().
+  DoorTrigger.cs - Trigger de puertas en escena principal, abre Minigame_2 (zoom).
+  DoorSelector.cs - 3 puertas DENTRO del minigame. Por cada puerta:
+    - Auto-find child "sprite_dr" por nombre (feedbackSprite opcional en Inspector)
+    - fade in del doctor (0 -> alpha 1 en fadeDuration = 0.5s)
+    - auto-dialogo (si autoDialogueNpcId no vacio)
+    - fade out del doctor (alpha 1 -> 0)
+    - desactiva child sprite_dr
+    - Si isCorrect: oculta ticketButton, questProgress++, reactiva trigger con secondTerminal
+    - Si !isCorrect: ScheduleTime(2), SetShameTimed(0.25f, 6)
+  RedirectButton.cs - Boton de salida de signboard.
+  Signboard/SignboardDirector.cs - 4 opciones -> leftRoom/rightRoom.
+  Signboard/SignSection.cs - Hover sections.
+  Terminal/TerminalTrigger.cs - Hereda MinigameTrigger.
+  Terminal/ClickableButton.cs - Boton visual con hover/press, IsCancel.
+  Terminal/TerminalMonitor.cs - Secuencia de botones, AutoExecute.
+  Terminal/PlayerTerminal.cs - Orquesta terminal. questProgress++ al completar.
+  Terminal/NpcTerminal.cs - NPC auto-play con bias y ciclos.
+  Terminal/Ticket.cs - Collectible con OnCollected.
 
 Infraestructura/
-  Card.cs (147 lines) - Botones Walk/Bus con hover/press por EventTrigger. UpdateTravelInfo.
-  Destination.cs (37 lines) - Clic en edificio del mapa, calcula path, muestra card.
-  PathDrawer.cs (132 lines) - BFS pathfinding. CalculateTravelOptions(dist -> walk/bus time + busCost 750).
-  Waypoint.cs (8 lines) - Nodo con neighbors.
-  BuildingInterior.cs (18 lines) - Show/Hide por buildingName.
+  Card.cs - Botones Walk/Bus.
+  Destination.cs - Click edificio mapa, calcula path, muestra card.
+  PathDrawer.cs - BFS pathfinding, CalculateTravelOptions.
+  Waypoint.cs - Nodo con neighbors.
+  BuildingInterior.cs - Show/Hide por buildingName.
 
 === SISTEMA DE TIEMPO ===
 - Cuenta regresiva. remainingMinutes arranca en 660 (11hs = 7am a 6pm)
-- Cada 1s real se descuenta 1 minuto
-- Viajar descuenta tiempo (walk = dist*4, bus = dist*1, busCost = 750)
-- Error en minijuego descuenta 2 min (ScheduleTime/SpendTime)
-- timeLabel muestra "HH : MM hs restantes"
+- 1s real = 1 minuto
+- ScheduleTime(2) penaliza 2 min por error en puertas
 
 === SISTEMA DE VERGUENZA ===
-- SetShameTimed(level, durationMinutes) activa verguenza por tiempo
-- Al terminar timer, fadeout en shameFadeOutMinutes (default 3)
-- Mientras shameActive, cada tick descuenta shameTimeMultiplier (default 2) min
-- TimeFeedback.Flash() cada 3 ticks acelerados
+- SetShameTimed(0.25f, 6): 25% de verguenza durante 6s en puertas incorrectas
+- Fadeout en shameFadeOutMinutes (default 3)
 
-=== SUB-LOCATIONS (PushSubLocation/PopSubLocation) ===
-- PushSubLocation(newLocation, backTarget): pushea backTarget al stack, currentSubRoom = newLocation
-- Oculta mapButton, muestra backButton
-- PopSubLocation(): desactiva currentSubRoom, activa popeada. Stack vacio -> oculta back, muestra map
+=== SUB-LOCATIONS ===
+- PushSubLocation/PopSubLocation con stack de backTargets
 
-=== MINIJUEGOS (Assets/img/minijuegos/) ===
-mj_00 - Terminal 1 (3 monitores, Minigame_0 en escena)
+=== MINIJUEGOS ===
+mj_00 - Terminal 1 (3 monitores, Minigame_0)
 mj_01 - Cartel/Signboard
-mj_02 - Puertas (DoorSelector: puerta correcta reactiva trigger + oculta ticketButton)
-mj_04 - Terminal 2 / minigame_3 (3 monitores en PlayerTerminal, Minigame_3 en escena)
-mj_06 - Maquina de golosinas (assets img, sin implementar)
-
-=== SPRITES DE NPC ===
-Assets/img/npc/personaje_01.png (235x741) - Sprite normal/Idle
-Assets/img/npc/personaje_01a.png (369x741) - Sprite apuntando (animacion Talk)
-Assets/img/personajes/ - Duplicados de personaje_01 sin trackear
-Assets/img/npc/NPC_Receptionist.controller - Animator Controller (2 estados: Idle/Talk con triggers)
-Assets/img/npc/NPC_Receptionist.anim - Idle animation (sprites recepcionista_00, recepcionista_02)
-Assets/img/npc/NPC_Receptionist_talk.anim - Talk animation (sprites recepcionista_01, recepcionista_02)
-
-NOTA: NPC_Receptionist en escena necesita que su hijo "sprite" tenga un Animator component
-apuntando a NPC_Receptionist.controller. Actualmente solo tiene SpriteRenderer.
-
-=== BUILDINGS (5 en day_2) ===
-allBuildings[]: house, hospital, etc.
-Hospital con sub-locations: leftRoom / rightRoom (SignboardDirector), previousRoom (vuelta)
-
-=== CAMBIOS NO COMMITEADOS (git status) ===
-Modificados:
-- Assets/Scripts/Dialogue/DialogueNode.cs (nuevo formato: DialogueEntry[] en lugar de nodeId/nextNodeId)
-- Assets/Scripts/Dialogue/DialogueManager.cs (simplificado: busca por questProgress, playerLine primero)
-- Assets/Scripts/Dialogue/DialogueUI.cs (ShowPlayerLine recibe DialogueManager mgr; soporte Enter/Space en Update)
-- Assets/Scripts/Managers/GameManager.cs (agregado questProgress)
-- Assets/Scripts/Minigames/DoorSelector.cs (questProgress++ en puerta correcta)
-- Assets/Scripts/Minigames/Terminal/PlayerTerminal.cs (questProgress++ al recolectar ticket)
-- Assets/img/npc/NPC_Receptionist.controller (reescrito: 2 estados Idle/Talk, triggers, transiciones)
-- Assets/img/minijuegos/mj_00/maquinasHover.png (binario)
-- Assets/img/minijuegos/mj_01/cartelHospital.png (binario)
-- contexto.txt
-
-Eliminados:
-- Assets/Scripts/Dialogue/hospital_root.asset (formato obsoleto)
-
-Untracked:
-- Assets/_Recovery/ (autorecovery de Unity: varias escenas)
-- Assets/img/minijuegos/mj_06/ (maquina de golosinas)
-- Assets/img/personajes/ (assets de personajes)
+mj_02 - Puertas (mj_02):
+  - Main scene: 3 puertas con DoorTrigger -> abren Minigame_2 (zoom)
+  - Minigame_2: GameObject "doors" con 3 door_0/1/2, cada una tiene:
+    - DoorSelector (fade+auto-dialogo+penalizacion/premio)
+    - Hijo "sprite_dr" (SpriteRenderer, empieza inactive)
+mj_04 - Terminal 2 (3 monitores, Minigame_3)
+mj_06 - Maquina de golosinas (sin implementar)
 
 === FLUJO TERMINAL 1 -> PUERTAS -> TERMINAL 2 ===
 1. btn_terminal abre Minigame_0 (terminal 1, 3 monitores)
-2. Terminal 1 completada: desactiva trigger, activa trigger 372701752, muestra btn_ticket con ticketUISprite + ticketDetailImage A
-3. Jugador va al hospital -> cartel -> sala -> DoorTrigger -> Puertas (mj_02)
-4. Puerta correcta: DoorSelector oculta btn_ticket, reactiva trigger 984406131 con Minigame_3 (terminal 2)
-5. btn_terminal ahora abre Minigame_3 (terminal 2, 3 monitores en PlayerTerminal)
-6. Terminal 2 completada: desactiva trigger, activa trigger 372701752, muestra btn_ticket con ticketUISprite + ticketDetailImage B
+2. Terminal 1 completada: questProgress++, desactiva trigger, activa trigger 372701752, muestra btn_ticket
+3. Jugador va al hospital -> cartel -> sala -> DoorTrigger -> Minigame_2 (zoom puertas)
+4. Dentro del zoom, click en puerta:
+   - fade in doctor sprite_dr
+   - auto-dialogo (NPC_Doctor_01 si correcta, NPC_door_fail si no)
+   - fade out doctor
+   - correcta: oculta btn_ticket, questProgress++, reactiva trigger con Minigame_3 (terminal 2)
+   - incorrecta: ScheduleTime(2), SetShameTimed(0.25f, 6)
+5. btn_terminal ahora abre Minigame_3 (terminal 2)
+6. Terminal 2 completada: questProgress++, muestra btn_ticket con otro ticket
 
-=== LO QUE FALTA / PROXIMOS PASES ===
-- Crear DialogueNode assets por NPC y asignarlos en DialogueManager.allDialogueNodes
-- Agregar Animator component al hijo "sprite" de NPC_Receptionist y asignar NPC_Receptionist.controller
-- day_1.unity y day_3.unity: armar GameManager
-- No hay sistema de guardado
-- MapManager.cs es esqueleto
-- Minijuego 5 (maquina golosinas, mj_06) sin implementar
-- Faltan imagenes de NPC para minigame_2, sistema de dialogos para justificar verguenza
-- Assets/img/personajes/ sin trackear
-- Assets/_Recovery/ limpiar
+=== ASSETS DE DIALOGO ===
+- NPC_Doctor_01.asset (npcId: "Doctor_01"): 2 entradas (progress 2 y 3)
+- NPC_door_fail.asset (npcId: "doorFail"): 1 entrada (progress 2)
+- NPC_Receptionist.asset: dialogo de recepcionista
+- NPC_HospitalWorker.asset: dialogo de trabajador, 2 entradas (progress 2 y 3?)
+- Todos asignados en DialogueManager.allDialogueNodes de la escena
 
 === NOTAS ===
-- contextos anteriores: contexto_umbral.txt eliminado (12/06/2026). Este es el unico contexto.
-- Sistema de dialogo: cada DialogueNode tiene DialogueEntry[] con requiredProgress/playerLine/npcLine. Se muestra playerLine primero.
-- DialogueManager busca la entrada con requiredProgress mas alto <= questProgress al iniciar dialogo.
-- questProgress se incrementa en PlayerTerminal.OnTicketCollected y DoorSelector (puerta correcta).
-- DoorSelector ahora oculta ticketButton al ganar, y cada PlayerTerminal tiene su propio ticketUISprite y ticketDetailImage.
-- PlayerTerminal.OnButtonClicked tiene bounds check: if (currentMonitorIndex >= monitors.Length) return;
-- Minigame_3 PlayerTerminal tiene 3 monitores (no 4). El cuarto (1157280286) no esta en el array.
-- Bug de invisibilidad del segundo ticket: la Layer estaba mal configurada; solucionado en Inspector.
-- MinigameTrigger.Update() reevalua sprite mediante wasMinigameActive forzado.
-- Animaciones de NPC creadas manualmente en Unity Editor (Idle/Talk con triggers).
-- Las referencias de escena se asignan por Inspector, no por YAML.
+- Las referencias de escena se asignan por Inspector, no por YAML
+- No editar YAML de escenas manualmente
+- animation bug fix: NPC_Receptionist.controller Idle trigger m_DefaultBool = 0
+- DoorSelector busca "sprite_dr" por nombre automaticamente si feedbackSprite es null
+- autoAdvanceDelay = 1.5s por linea de dialogo
+- Los dialogos iteran sobre TODAS las entradas del nodo con progress requerido cumplido

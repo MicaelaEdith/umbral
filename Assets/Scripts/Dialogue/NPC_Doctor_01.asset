@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 071920c32a6056558a742a9ffe847d34, type: 3}
+  m_Name: NPC_Doctor_01
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueNode
+  npcId: Doctor_01
+  entries:
+  - requiredProgress: 2
+    playerLine: "Buen d\xEDa, necesito hacer el apto f\xEDsico para mi hijo."
+    npcLine: "Buen d\xEDa, pase."
+  - requiredProgress: 3
+    playerLine: "Recuerde que todav\xEDa le falta el electro, le anot\xE9 los pasos
+      a seguir en este ticket."
+    npcLine: Muchas gracias.

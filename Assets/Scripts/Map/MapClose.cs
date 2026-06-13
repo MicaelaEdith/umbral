@@ -18,6 +18,9 @@ public class MapClose : MonoBehaviour
     [SerializeField]
     private GameObject player;
 
+    [SerializeField]
+    private GameObject[] npcs;
+
     public void Close()
     {
         MapToggle.IsOpen = false;
@@ -25,6 +28,8 @@ public class MapClose : MonoBehaviour
         closeButton.SetActive(false);
         openButton.SetActive(true);
         player.SetActive(true);
+        foreach (GameObject npc in npcs)
+            npc.SetActive(true);
 
         Card[] cards = FindObjectsByType<Card>(FindObjectsSortMode.None);
         foreach (Card card in cards)

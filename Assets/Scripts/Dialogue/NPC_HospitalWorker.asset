@@ -12,5 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 071920c32a6056558a742a9ffe847d34, type: 3}
   m_Name: NPC_HospitalWorker
   m_EditorClassIdentifier: Assembly-CSharp::DialogueNode
-  npcId: 
-  entries: []
+  npcId: hospital_worker
+  entries:
+  - requiredProgress: 1
+    playerLine: "Hola \xBFD\xF3nde queda este lugar?"
+    npcLine: Lea el cartel
+  - requiredProgress: 1
+    playerLine: "No s\xE9 leer."
+    npcLine: Bue..
+  - requiredProgress: 0
+    playerLine: Hola, necesito sacar un turno.
+    npcLine: "Pregunte en recepci\xF3n."
