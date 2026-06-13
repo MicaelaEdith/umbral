@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerTerminal : MonoBehaviour
 {
@@ -7,6 +8,8 @@ public class PlayerTerminal : MonoBehaviour
     [SerializeField] private GameObject ticketButton;
     [SerializeField] private MinigameTrigger triggerToDisable;
     [SerializeField] private MinigameTrigger triggerToEnable;
+    [SerializeField] private Sprite ticketUISprite;
+    [SerializeField] private Image ticketDetailImage;
 
     private int currentMonitorIndex;
     private int mistakeCount;
@@ -121,6 +124,9 @@ public class PlayerTerminal : MonoBehaviour
             currentTicket = null;
         }
 
+        if (GameManager.Instance != null)
+            GameManager.Instance.questProgress++;
+
         if (triggerToDisable != null)
         {
             triggerToDisable.SetCanActivate(false);
@@ -131,7 +137,18 @@ public class PlayerTerminal : MonoBehaviour
             triggerToEnable.SetCanActivate(true);
 
         if (ticketButton != null)
+        {
             ticketButton.SetActive(true);
+            if (ticketUISprite != null)
+            {
+                Image img = ticketButton.GetComponentInChildren<Image>(true);
+                if (img != null)
+                    img.sprite = ticketUISprite;
+
+                if (ticketDetailImage != null)
+                    ticketDetailImage.sprite = ticketUISprite;
+            }
+        }
 
         if (parentToClose != null)
             parentToClose.SetActive(false);

@@ -6,6 +6,7 @@ public class DoorSelector : MonoBehaviour
     [SerializeField] private Color hoverColor = new Color(1f, 1f, 1f, 0.2f);
     [SerializeField] private MinigameTrigger triggerToReactivate;
     [SerializeField] private GameObject secondTerminal;
+    [SerializeField] private GameObject ticketButton;
 
     private SpriteRenderer sr;
     private Color defaultColor;
@@ -35,6 +36,12 @@ public class DoorSelector : MonoBehaviour
         }
         else if (isCorrect)
         {
+            if (ticketButton != null)
+                ticketButton.SetActive(false);
+
+            if (GameManager.Instance != null)
+                GameManager.Instance.questProgress++;
+
             if (triggerToReactivate != null)
             {
                 triggerToReactivate.SetCanActivate(true);

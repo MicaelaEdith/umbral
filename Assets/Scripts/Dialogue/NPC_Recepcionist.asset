@@ -10,10 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 071920c32a6056558a742a9ffe847d34, type: 3}
-  m_Name: hospital_root
+  m_Name: NPC_Recepcionist
   m_EditorClassIdentifier: Assembly-CSharp::DialogueNode
-  nodeId: root
-  npcId: hospital_worker
-  npcLine: "Est\xE1 indicado en el cartel"
-  playerLine: Gracias
-  nextNodeId: 
+  npcId: Receptionist
+  entries:
+  - requiredProgress: 0
+    playerLine: "Buen d\xEDa, necesito hacer el apto f\xEDsico de mi hijo."
+    npcLine: "Buen d\xEDa, debe sacar turno en la terminal."
+  - requiredProgress: 0
+    playerLine: Muchas gracias.
+    npcLine: 

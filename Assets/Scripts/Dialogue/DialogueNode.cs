@@ -1,18 +1,19 @@
 using UnityEngine;
 
+[System.Serializable]
+public class DialogueEntry
+{
+    public int requiredProgress;
+    [TextArea] public string playerLine;
+    [TextArea] public string npcLine;
+}
+
 [CreateAssetMenu(menuName = "Umbral/Dialogue Node", fileName = "NewDialogueNode")]
 public class DialogueNode : ScriptableObject
 {
-    [SerializeField] private string nodeId;
     [SerializeField] private string npcId;
-    [SerializeField] private string npcLine;
-    [SerializeField] private string playerLine;
-    [SerializeField] private string nextNodeId;
+    [SerializeField] private DialogueEntry[] entries;
 
-    public string NodeId => nodeId;
     public string NpcId => npcId;
-    public string NpcLine => npcLine;
-    public string PlayerLine => playerLine;
-    public string NextNodeId => nextNodeId;
-    public bool IsLast => string.IsNullOrEmpty(nextNodeId);
+    public DialogueEntry[] Entries => entries;
 }

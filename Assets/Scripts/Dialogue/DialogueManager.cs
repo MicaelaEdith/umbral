@@ -11,7 +11,7 @@ public class DialogueManager : MonoBehaviour
     [SerializeField] private GameObject player;
 
     private NPC currentNPC;
-    private DialogueNode currentNode;
+    private DialogueEntry currentEntry;
     private readonly Dictionary<string, DialogueNode[]> nodesByNpc = new();
 
     public bool IsDialogueActive { get; private set; }
@@ -41,50 +41,48 @@ public class DialogueManager : MonoBehaviour
 
         currentNPC = npc;
         DialogueNode[] nodes = nodesByNpc[npc.NpcId];
-        DialogueNode firstNode = nodes.FirstOrDefault(n => n.NodeId == "root")
-                            ?? nodes[0];
+        currentEntry = FindBestEntry(nodes, GameManager.Instance.questProgress);
 
-        if (firstNode == null) return;
+        if (currentEntry == null) return;
 
         IsDialogueActive = true;
-        currentNode = firstNode;
         currentNPC.PlayTalkAnimation();
 
         if (player != null)
             player.SetActive(false);
 
-        dialogueUI.ShowNpcLine(firstNode.NpcLine, this);
+        dialogueUI.ShowPlayerLine(currentEntry.playerLine, this);
     }
 
-    public void OnNpcClicked()
+    private DialogueEntry FindBestEntry(DialogueNode[] nodes, int progress)
     {
-        if (currentNode == null) return;
-        currentNPC.PlayIdleAnimation();
-        dialogueUI.ShowPlayerLine(currentNode.PlayerLine);
+        DialogueEntry best = null;
+        int bestProgress = -1;
+        foreach (var node in nodes)
+        {
+            foreach (var entry in node.Entries)
+            {
+                if (entry.requiredProgress <= progress && entry.requiredProgress > bestProgress)
+                {
+                    best = entry;
+                    bestProgress = entry.requiredProgress;
+                }
+            }
+        }
+        return best;
     }
 
     public void OnPlayerClicked()
     {
-        if (currentNode == null) return;
-
-        if (currentNode.IsLast)
-        {
-            EndDialogue();
-            return;
-        }
-
-        DialogueNode[] nodes = nodesByNpc[currentNPC.NpcId];
-        DialogueNode nextNode = nodes.FirstOrDefault(n => n.NodeId == currentNode.NextNodeId);
-
-        if (nextNode == null)
-        {
-            EndDialogue();
-            return;
-        }
-
-        currentNode = nextNode;
+        if (currentEntry == null) return;
         currentNPC.PlayTalkAnimation();
-        dialogueUI.ShowNpcLine(nextNode.NpcLine, this);
+        dialogueUI.ShowNpcLine(currentEntry.npcLine, this);
+    }
+
+    public void OnNpcClicked()
+    {
+        currentNPC.PlayIdleAnimation();
+        EndDialogue();
     }
 
     public void EndDialogue()
@@ -99,6 +97,6 @@ public class DialogueManager : MonoBehaviour
             player.SetActive(true);
 
         currentNPC = null;
-        currentNode = null;
+        currentEntry = null;
     }
 }

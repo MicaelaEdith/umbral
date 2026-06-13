@@ -30,8 +30,9 @@ public class DialogueUI : MonoBehaviour
         lastChangeFrame = Time.frameCount;
     }
 
-    public void ShowPlayerLine(string text)
+    public void ShowPlayerLine(string text, DialogueManager mgr)
     {
+        manager = mgr;
         npcBubble.SetActive(false);
         playerText.text = text;
         playerBubble.SetActive(true);
@@ -51,7 +52,7 @@ public class DialogueUI : MonoBehaviour
         if (state == State.Hidden) return;
         if (Time.frameCount <= lastChangeFrame) return;
 
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space))
         {
             switch (state)
             {

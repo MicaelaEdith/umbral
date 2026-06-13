@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour
     public Waypoint currentDestinationWaypoint;
     public string currentLocation;
 
+    public int questProgress;
     public bool shameActive;
     [Range(0f, 1f)] public float shameLevel;
     public int shameTimerMinutes { get; private set; }
