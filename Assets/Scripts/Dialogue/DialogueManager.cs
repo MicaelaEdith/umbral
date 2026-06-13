@@ -19,6 +19,7 @@ public class DialogueManager : MonoBehaviour
     private bool isDirectDialogue;
 
     public bool IsDialogueActive { get; private set; }
+    public bool CanSkipInput { get; set; } = true;
 
     private void Awake()
     {
@@ -60,7 +61,7 @@ public class DialogueManager : MonoBehaviour
         dialogueUI.ShowPlayerLine(currentEntries[0].playerLine, this);
     }
 
-    public void PlayDialogueDirect(string npcId, Action onComplete)
+    public void PlayDialogueDirect(string npcId, Action onComplete, int requiredProgress = -1)
     {
         if (!nodesByNpc.ContainsKey(npcId)) return;
 
@@ -68,10 +69,19 @@ public class DialogueManager : MonoBehaviour
         onDialogueComplete = onComplete;
         currentNPC = null;
         DialogueNode[] nodes = nodesByNpc[npcId];
-        currentEntries = new List<DialogueEntry>(nodes[0].Entries);
+        currentEntries = new List<DialogueEntry>();
+        foreach (var entry in nodes[0].Entries)
+        {
+            if (requiredProgress < 0 || entry.requiredProgress == requiredProgress)
+                currentEntries.Add(entry);
+        }
         currentEntryIndex = 0;
 
-        if (currentEntries == null || currentEntries.Count == 0) return;
+        if (currentEntries.Count == 0)
+        {
+            onComplete?.Invoke();
+            return;
+        }
 
         IsDialogueActive = true;
         dialogueUI.ShowPlayerLine(currentEntries[0].playerLine, this);
@@ -122,6 +132,7 @@ public class DialogueManager : MonoBehaviour
     public void EndDialogue()
     {
         IsDialogueActive = false;
+        CanSkipInput = true;
         dialogueUI.Hide();
 
         if (!isDirectDialogue)

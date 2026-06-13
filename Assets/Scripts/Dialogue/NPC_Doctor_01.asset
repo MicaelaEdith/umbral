@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DialogueNode
   npcId: Doctor_01
   entries:
-  - requiredProgress: 2
+  - requiredProgress: 1
     playerLine: "Buen d\xEDa, necesito hacer el apto f\xEDsico para mi hijo."
     npcLine: "Buen d\xEDa, pase."
   - requiredProgress: 3
-    playerLine: "Recuerde que todav\xEDa le falta el electro, le anot\xE9 los pasos
+    playerLine: Muchas gracias, Doctora.
+    npcLine: "Recuerde que todav\xEDa le falta el electro, le anot\xE9 los pasos
       a seguir en este ticket."
-    npcLine: Muchas gracias.

@@ -60,8 +60,9 @@ public class DialogueUI : MonoBehaviour
 
         bool advance = autoTimer >= autoAdvanceDelay;
 
-        if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space))
-            advance = true;
+        if (manager != null && manager.CanSkipInput)
+            if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space))
+                advance = true;
 
         if (!advance) return;
 

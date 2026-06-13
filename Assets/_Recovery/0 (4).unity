@@ -21063,7 +21063,7 @@ MonoBehaviour:
   hoverColor: {r: 1, g: 1, b: 1, a: 0.2}
   triggerToReactivate: {fileID: 0}
   secondTerminal: {fileID: 0}
-  ticketButton: {fileID: 464493066}
+  ticketButton: {fileID: 0}
 --- !u!70 &1278295909
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -24902,7 +24902,7 @@ MonoBehaviour:
   hoverColor: {r: 1, g: 1, b: 1, a: 0.2}
   triggerToReactivate: {fileID: 0}
   secondTerminal: {fileID: 0}
-  ticketButton: {fileID: 464493066}
+  ticketButton: {fileID: 0}
 --- !u!70 &1515443729
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

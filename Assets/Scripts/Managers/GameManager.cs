@@ -20,6 +20,8 @@ public class GameManager : MonoBehaviour
     public string currentLocation;
 
     public int questProgress;
+    public static bool IsInputLocked { get; set; }
+
     public bool shameActive;
     [Range(0f, 1f)] public float shameLevel;
     public int shameTimerMinutes { get; private set; }
@@ -197,6 +199,7 @@ public class GameManager : MonoBehaviour
 
     public void PopSubLocation()
     {
+        if (IsInputLocked) return;
         if (subLocationStack.Count == 0) return;
 
         if (currentSubRoom != null)

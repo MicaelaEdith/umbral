@@ -7,15 +7,19 @@ public class DoorSelector : MonoBehaviour
     [SerializeField] private string autoDialogueNpcId;
     [SerializeField] private GameObject feedbackSprite;
     [SerializeField] private float fadeDuration = 0.5f;
+    [SerializeField] private float consultationDelay = 3f;
     [SerializeField] private Color hoverColor = new Color(1f, 1f, 1f, 0.2f);
     [SerializeField] private MinigameTrigger triggerToReactivate;
     [SerializeField] private GameObject secondTerminal;
     [SerializeField] private GameObject ticketButton;
 
+    private static bool isAnyDoorExecuting;
+
     private SpriteRenderer doorSr;
     private Color defaultColor;
     private SpriteRenderer feedbackSr;
     private bool isExecuting;
+    private bool ticketWasActive;
 
     private void Awake()
     {
@@ -37,7 +41,7 @@ public class DoorSelector : MonoBehaviour
 
     private void OnMouseEnter()
     {
-        if (isExecuting) return;
+        if (isExecuting || isAnyDoorExecuting) return;
         doorSr.color = hoverColor;
     }
 
@@ -48,8 +52,14 @@ public class DoorSelector : MonoBehaviour
 
     private void OnMouseDown()
     {
-        if (isExecuting) return;
+        if (isExecuting || isAnyDoorExecuting) return;
+        isAnyDoorExecuting = true;
         isExecuting = true;
+        GameManager.IsInputLocked = true;
+
+        ticketWasActive = ticketButton != null && ticketButton.activeSelf;
+        if (ticketButton != null) ticketButton.SetActive(false);
+
         StartCoroutine(ExecuteSequence());
     }
 
@@ -57,34 +67,23 @@ public class DoorSelector : MonoBehaviour
     {
         doorSr.color = defaultColor;
 
-        if (feedbackSprite != null) feedbackSprite.SetActive(true);
-        if (feedbackSr != null)
-            yield return FadeSprite(feedbackSr, 0f, 1f, fadeDuration);
-
-        bool completed = false;
-        if (!string.IsNullOrEmpty(autoDialogueNpcId))
+        if (isCorrect)
         {
-            DialogueManager.Instance.PlayDialogueDirect(autoDialogueNpcId, () => completed = true);
-            yield return new WaitUntil(() => completed);
-        }
-        else completed = true;
+            yield return ShowDoctorAndPlayDialogue(1);
 
-        if (feedbackSr != null)
-            yield return FadeSprite(feedbackSr, 1f, 0f, fadeDuration);
-        if (feedbackSprite != null) feedbackSprite.SetActive(false);
+            yield return HideDoctor();
 
-        if (!isCorrect && GameManager.Instance != null)
-        {
-            GameManager.Instance.ScheduleTime(2);
-            GameManager.Instance.SetShameTimed(0.25f, 6);
-        }
-        else if (isCorrect)
-        {
-            if (ticketButton != null)
-                ticketButton.SetActive(false);
+            yield return new WaitForSeconds(consultationDelay);
 
             if (GameManager.Instance != null)
-                GameManager.Instance.questProgress++;
+                GameManager.Instance.questProgress = 3;
+
+            yield return ShowDoctorAndPlayDialogue(3);
+
+            yield return HideDoctor();
+
+            if (ticketButton != null)
+                ticketButton.SetActive(false);
 
             if (triggerToReactivate != null)
             {
@@ -93,8 +92,49 @@ public class DoorSelector : MonoBehaviour
                     triggerToReactivate.SetMinigameObject(secondTerminal);
             }
         }
+        else
+        {
+            yield return ShowDoctorAndPlayDialogue();
+            yield return HideDoctor();
 
+            if (GameManager.Instance != null)
+            {
+                GameManager.Instance.ScheduleTime(2);
+                GameManager.Instance.SetShameTimed(0.25f, 6);
+            }
+
+            if (ticketButton != null && ticketWasActive)
+                ticketButton.SetActive(true);
+        }
+
+        GameManager.IsInputLocked = false;
+        if (DialogueManager.Instance != null)
+            DialogueManager.Instance.CanSkipInput = true;
+        isAnyDoorExecuting = false;
         isExecuting = false;
+    }
+
+    private IEnumerator ShowDoctorAndPlayDialogue(int requiredProgress = -1)
+    {
+        if (feedbackSprite != null) feedbackSprite.SetActive(true);
+        if (feedbackSr != null)
+            yield return FadeSprite(feedbackSr, 0f, 1f, fadeDuration);
+
+        bool completed = false;
+        if (!string.IsNullOrEmpty(autoDialogueNpcId))
+        {
+            DialogueManager.Instance.CanSkipInput = false;
+            DialogueManager.Instance.PlayDialogueDirect(autoDialogueNpcId, () => completed = true, requiredProgress);
+            yield return new WaitUntil(() => completed);
+        }
+        else completed = true;
+    }
+
+    private IEnumerator HideDoctor()
+    {
+        if (feedbackSr != null)
+            yield return FadeSprite(feedbackSr, 1f, 0f, fadeDuration);
+        if (feedbackSprite != null) feedbackSprite.SetActive(false);
     }
 
     private IEnumerator FadeSprite(SpriteRenderer sr, float from, float to, float duration)
