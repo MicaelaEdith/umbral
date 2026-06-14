@@ -14,6 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DialogueNode
   npcId: doorFail
   entries:
-  - requiredProgress: 2
+  - requiredProgress: 1
     playerLine: "Hola, necesito hacer el apto f\xEDsico para mi hijo."
     npcLine: "Tiene que ir a pediatr\xEDa, es la otra puerta."
+  - requiredProgress: 3
+    playerLine: "Hola, necesito hacer este tr\xE1mite."
+    npcLine: "Eso no es ac\xE1."

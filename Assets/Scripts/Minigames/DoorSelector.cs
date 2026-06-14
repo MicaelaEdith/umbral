@@ -5,6 +5,7 @@ public class DoorSelector : MonoBehaviour
 {
     [SerializeField] private bool isCorrect;
     [SerializeField] private string autoDialogueNpcId;
+    [SerializeField] private string reproachNpcId = "Doctor_01";
     [SerializeField] private GameObject feedbackSprite;
     [SerializeField] private float fadeDuration = 0.5f;
     [SerializeField] private float consultationDelay = 3f;
@@ -67,7 +68,14 @@ public class DoorSelector : MonoBehaviour
     {
         doorSr.color = defaultColor;
 
-        if (isCorrect)
+        if (GameManager.Instance != null && GameManager.Instance.questProgress >= 3)
+        {
+            yield return ShowDoctorAndPlayDialogue(GameManager.Instance.questProgress, reproachNpcId);
+            yield return HideDoctor();
+
+            GameManager.Instance.SetShameTimed(0.25f, 3);
+        }
+        else if (isCorrect)
         {
             yield return ShowDoctorAndPlayDialogue(1);
 
@@ -76,11 +84,14 @@ public class DoorSelector : MonoBehaviour
             yield return new WaitForSeconds(consultationDelay);
 
             if (GameManager.Instance != null)
-                GameManager.Instance.questProgress = 3;
+                GameManager.Instance.questProgress = 42;
 
-            yield return ShowDoctorAndPlayDialogue(3);
+            yield return ShowDoctorAndPlayDialogue(42);
 
             yield return HideDoctor();
+
+            if (GameManager.Instance != null)
+                GameManager.Instance.questProgress = 3;
 
             if (ticketButton != null)
                 ticketButton.SetActive(false);
@@ -94,7 +105,8 @@ public class DoorSelector : MonoBehaviour
         }
         else
         {
-            yield return ShowDoctorAndPlayDialogue();
+            int progress = GameManager.Instance != null ? GameManager.Instance.questProgress : 2;
+            yield return ShowDoctorAndPlayDialogue(progress);
             yield return HideDoctor();
 
             if (GameManager.Instance != null)
@@ -114,17 +126,18 @@ public class DoorSelector : MonoBehaviour
         isExecuting = false;
     }
 
-    private IEnumerator ShowDoctorAndPlayDialogue(int requiredProgress = -1)
+    private IEnumerator ShowDoctorAndPlayDialogue(int requiredProgress = -1, string npcIdOverride = null)
     {
         if (feedbackSprite != null) feedbackSprite.SetActive(true);
         if (feedbackSr != null)
             yield return FadeSprite(feedbackSr, 0f, 1f, fadeDuration);
 
+        string npcId = npcIdOverride ?? autoDialogueNpcId;
         bool completed = false;
-        if (!string.IsNullOrEmpty(autoDialogueNpcId))
+        if (!string.IsNullOrEmpty(npcId))
         {
             DialogueManager.Instance.CanSkipInput = false;
-            DialogueManager.Instance.PlayDialogueDirect(autoDialogueNpcId, () => completed = true, requiredProgress);
+            DialogueManager.Instance.PlayDialogueDirect(npcId, () => completed = true, requiredProgress);
             yield return new WaitUntil(() => completed);
         }
         else completed = true;

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class DialogueManager : MonoBehaviour
@@ -24,19 +23,23 @@ public class DialogueManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-        BuildNodeIndex();
-    }
 
-    private void BuildNodeIndex()
-    {
         nodesByNpc.Clear();
         foreach (var node in allDialogueNodes)
         {
             if (node == null) continue;
-            if (!nodesByNpc.ContainsKey(node.NpcId))
-                nodesByNpc[node.NpcId] = new DialogueNode[] { node };
+            if (nodesByNpc.TryGetValue(node.NpcId, out var existing))
+            {
+                var expanded = new DialogueNode[existing.Length + 1];
+                for (int i = 0; i < existing.Length; i++)
+                    expanded[i] = existing[i];
+                expanded[existing.Length] = node;
+                nodesByNpc[node.NpcId] = expanded;
+            }
             else
-                nodesByNpc[node.NpcId] = nodesByNpc[node.NpcId].Append(node).ToArray();
+            {
+                nodesByNpc[node.NpcId] = new DialogueNode[] { node };
+            }
         }
     }
 
@@ -46,11 +49,10 @@ public class DialogueManager : MonoBehaviour
 
         isDirectDialogue = false;
         currentNPC = npc;
-        DialogueNode[] nodes = nodesByNpc[npc.NpcId];
-        currentEntries = GetEntriesForProgress(nodes, GameManager.Instance.questProgress);
+        currentEntries = CollectEntries(npc.NpcId, GameManager.Instance.questProgress);
         currentEntryIndex = 0;
 
-        if (currentEntries == null || currentEntries.Count == 0) return;
+        if (currentEntries.Count == 0) return;
 
         IsDialogueActive = true;
         currentNPC.PlayTalkAnimation();
@@ -61,20 +63,14 @@ public class DialogueManager : MonoBehaviour
         dialogueUI.ShowPlayerLine(currentEntries[0].playerLine, this);
     }
 
-    public void PlayDialogueDirect(string npcId, Action onComplete, int requiredProgress = -1)
+    public void PlayDialogueDirect(string npcId, Action onComplete, int requiredProgress)
     {
         if (!nodesByNpc.ContainsKey(npcId)) return;
 
         isDirectDialogue = true;
         onDialogueComplete = onComplete;
         currentNPC = null;
-        DialogueNode[] nodes = nodesByNpc[npcId];
-        currentEntries = new List<DialogueEntry>();
-        foreach (var entry in nodes[0].Entries)
-        {
-            if (requiredProgress < 0 || entry.requiredProgress == requiredProgress)
-                currentEntries.Add(entry);
-        }
+        currentEntries = CollectEntries(npcId, requiredProgress);
         currentEntryIndex = 0;
 
         if (currentEntries.Count == 0)
@@ -87,22 +83,13 @@ public class DialogueManager : MonoBehaviour
         dialogueUI.ShowPlayerLine(currentEntries[0].playerLine, this);
     }
 
-    private List<DialogueEntry> GetEntriesForProgress(DialogueNode[] nodes, int progress)
+    private List<DialogueEntry> CollectEntries(string npcId, int progress)
     {
-        int bestProgress = -1;
-        foreach (var node in nodes)
-            foreach (var entry in node.Entries)
-                if (entry.requiredProgress <= progress && entry.requiredProgress > bestProgress)
-                    bestProgress = entry.requiredProgress;
-
         var result = new List<DialogueEntry>();
-        if (bestProgress < 0) return result;
-
-        foreach (var node in nodes)
+        foreach (var node in nodesByNpc[npcId])
             foreach (var entry in node.Entries)
-                if (entry.requiredProgress == bestProgress)
+                if (entry.requiredProgress == progress)
                     result.Add(entry);
-
         return result;
     }
 

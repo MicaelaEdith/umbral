@@ -18,6 +18,9 @@ MonoBehaviour:
     playerLine: "Buen d\xEDa, necesito hacer el apto f\xEDsico para mi hijo."
     npcLine: "Buen d\xEDa, pase."
   - requiredProgress: 3
+    playerLine: "Disculpe, ¿será aquí donde tengo que ir?"
+    npcLine: "No, este no es el lugar. Usted ya terminó acá, debe estar confundida."
+  - requiredProgress: 42
     playerLine: Muchas gracias, Doctora.
     npcLine: "Recuerde que todav\xEDa le falta el electro, le anot\xE9 los pasos
       a seguir en este ticket."
