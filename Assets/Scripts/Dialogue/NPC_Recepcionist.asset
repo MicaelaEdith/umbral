@@ -22,4 +22,4 @@ MonoBehaviour:
     npcLine: "Est\xE1 en el cartel."
   - requiredProgress: 3
     playerLine: "Hac\xEDa d\xF3nde tengo que ir para estudios?"
-    npcLine: SAque un turno de estudios en la terminal y vaya a la izquierda.
+    npcLine: Saque un turno de estudios en la terminal y vaya a la izquierda.

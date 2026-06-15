@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 9c79f42700c2406d7898bd56dd075741
+guid: 2e59fa376d9e7f2d5ae3608688d1f41f
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 7299045594406083295
-    second: maquinasexpendedoras_0
+      213: -8212523287269584615
+    second: maquinasvacias2_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -46,7 +46,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -109,17 +109,30 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: maquinasexpendedoras_0
+      name: maquinasvacias2_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 712
-        height: 717
+        width: 1376
+        height: 768
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: fda54fdcb4b6b4560800000000000000
-      internalID: 7299045594406083295
+      spriteID: 9115ca00591470e80800000000000000
+      internalID: -8212523287269584615
       vertices: []
       indices: 
       edges: []
@@ -138,7 +151,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -148,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      maquinasexpendedoras_0: 7299045594406083295
+      maquinasvacias2_0: -8212523287269584615
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -14,12 +14,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DialogueNode
   npcId: hospital_worker
   entries:
+  - requiredProgress: 0
+    playerLine: Hola, necesito sacar un turno.
+    npcLine: "Pregunte en recepci\xF3n."
   - requiredProgress: 1
     playerLine: "Hola \xBFD\xF3nde queda este lugar?"
     npcLine: Lea el cartel
   - requiredProgress: 1
     playerLine: "No s\xE9 leer."
     npcLine: Bue..
-  - requiredProgress: 0
-    playerLine: Hola, necesito sacar un turno.
-    npcLine: "Pregunte en recepci\xF3n."
+  - requiredProgress: 3
+    playerLine: "Me dijeron que tengo que hacer unos estudios \xBFSabe a d\xF3nde
+      tengo que ir?"
+    npcLine: "Estoy ocupado se\xF1ora, lea los carteles."
+  - requiredProgress: 4
+    playerLine: "\xBFPodr\xEDa decirme d\xF3nde queda esto?"
+    npcLine: Estoy ocupado, no moleste.
+  - requiredProgress: 5
+    playerLine: "Me dijeron que retire los estudios en la recepci\xF3n."
+    npcLine: "\xBFUsted me vio cara de recepci\xF3n?"

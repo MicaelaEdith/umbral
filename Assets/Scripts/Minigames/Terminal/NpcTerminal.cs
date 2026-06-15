@@ -14,9 +14,25 @@ public class NpcTerminal : MonoBehaviour
     [Header("Monitor 0 — correct button")]
     [SerializeField] private int correctButtonIndex = 2;
 
+    private bool started;
+
     private void Start()
     {
+        started = true;
         StartCoroutine(CycleLoop());
+    }
+
+    private void OnEnable()
+    {
+        if (started)
+            StartCoroutine(CycleLoop());
+    }
+
+    public void ResetTerminal()
+    {
+        StopAllCoroutines();
+        foreach (var m in monitors)
+            m.Activate();
     }
 
     private IEnumerator CycleLoop()

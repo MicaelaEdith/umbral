@@ -10,16 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 071920c32a6056558a742a9ffe847d34, type: 3}
-  m_Name: NPC_door_fail
+  m_Name: NPC_dr_left_1
   m_EditorClassIdentifier: Assembly-CSharp::DialogueNode
-  npcId: doorFail
+  npcId: dr_left1
   entries:
   - requiredProgress: 1
     playerLine: "Hola, necesito hacer el apto f\xEDsico para mi hijo."
-    npcLine: "Tiene que ir a pediatr\xEDa, es la otra puerta."
+    npcLine: "Tiene que ir a pediatr\xEDa, en la otra sala del hospital."
   - requiredProgress: 3
-    playerLine: "Hola, necesito hacer este tr\xE1mite."
-    npcLine: "Eso no es ac\xE1."
+    playerLine: "Hola \xBFSabe d\xF3nde puedo hacer este tr\xE1mite?"
+    npcLine: "Pregunte en la recepci\xF3n."
   - requiredProgress: 4
     playerLine: Hola, necesito hacer este estudio.
-    npcLine: "Eso es en otra \xE1rea."
+    npcLine: "Se equivoc\xF3 de puerta \xA1\xBFPor qu\xE9 no lee los carteles?!"
+  - requiredProgress: 5
+    playerLine: "Hola \xBFSabe donde puedo retirar estudios?"
+    npcLine: Ha ni idea...

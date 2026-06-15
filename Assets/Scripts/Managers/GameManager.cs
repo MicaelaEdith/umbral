@@ -19,7 +19,18 @@ public class GameManager : MonoBehaviour
     public Waypoint currentDestinationWaypoint;
     public string currentLocation;
 
-    public int questProgress;
+    [SerializeField] private GameObject btnNote;
+    [SerializeField] private int questProgressBacking;
+    public int questProgress
+    {
+        get => questProgressBacking;
+        set
+        {
+            questProgressBacking = value;
+            if (btnNote != null)
+                btnNote.SetActive(value == 3);
+        }
+    }
     public static bool IsInputLocked { get; set; }
 
     public bool shameActive;
@@ -38,7 +49,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI timeLabel;
     [SerializeField] private TextMeshProUGUI moneyLabel;
 
-    [SerializeField] private int remainingMinutes = 660;
+    [SerializeField] private int remainingMinutes = 480;
     [SerializeField] private int currentMoney = 2000;
 
     private float timeAccumulator;

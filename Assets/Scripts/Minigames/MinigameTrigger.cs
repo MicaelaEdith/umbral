@@ -32,6 +32,9 @@ public class MinigameTrigger : MonoBehaviour
         if (npcToHide != null)
             npcToHide.SetActive(!isActive);
 
+        if (mapButton != null)
+            mapButton.SetActive(!isActive);
+
         if (spriteRenderer != null)
         {
             bool showSprite = (canActivate || hoverWhenDisabled) && !isActive;

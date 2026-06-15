@@ -10,16 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 071920c32a6056558a742a9ffe847d34, type: 3}
-  m_Name: NPC_door_fail
+  m_Name: NPC_dr_left_0
   m_EditorClassIdentifier: Assembly-CSharp::DialogueNode
-  npcId: doorFail
+  npcId: dr_left0
   entries:
   - requiredProgress: 1
     playerLine: "Hola, necesito hacer el apto f\xEDsico para mi hijo."
-    npcLine: "Tiene que ir a pediatr\xEDa, es la otra puerta."
+    npcLine: "Tiene que ir a pediatr\xEDa, en la otra sala del hospital."
   - requiredProgress: 3
     playerLine: "Hola, necesito hacer este tr\xE1mite."
     npcLine: "Eso no es ac\xE1."
   - requiredProgress: 4
     playerLine: Hola, necesito hacer este estudio.
-    npcLine: "Eso es en otra \xE1rea."
+    npcLine: Buenas tardes, pase por favor.
+  - requiredProgress: 43
+    playerLine: Muchas gracias, Doctora
+    npcLine: De nada, recuerde sacar turno en la terminal para retirar el resultado.
+  - requiredProgress: 5
+    playerLine: Hola, necesito los resultados.
+    npcLine: "Tiene que sacar turno en la terminal y retirarlos en recepci\xF3n."

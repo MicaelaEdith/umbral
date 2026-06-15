@@ -4,6 +4,7 @@ using UnityEngine.UI;
 public class PlayerTerminal : MonoBehaviour
 {
     [SerializeField] private TerminalMonitor[] monitors;
+    [SerializeField] private NpcTerminal[] npcTerminals;
     [SerializeField] private GameObject parentToClose;
     [SerializeField] private GameObject ticketButton;
     [SerializeField] private MinigameTrigger triggerToDisable;
@@ -114,6 +115,22 @@ public class PlayerTerminal : MonoBehaviour
 
         if (monitors.Length > 0)
             monitors[0].Activate();
+    }
+
+    public void CloseAndReset()
+    {
+        ResetToStart();
+
+        foreach (var npc in npcTerminals)
+        {
+            if (npc != null)
+                npc.ResetTerminal();
+        }
+
+        if (parentToClose != null)
+            parentToClose.SetActive(false);
+        else
+            gameObject.SetActive(false);
     }
 
     private void OnTicketCollected()

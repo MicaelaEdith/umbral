@@ -4,11 +4,14 @@ using System.Collections;
 public class DoorSelector : MonoBehaviour
 {
     [SerializeField] private bool isCorrect;
+    [SerializeField] private int requiredProgress;
+    [SerializeField] private int intermediateProgress = 42;
+    [SerializeField] private int completionProgress = 3;
     [SerializeField] private string autoDialogueNpcId;
-    [SerializeField] private string reproachNpcId = "Doctor_01";
     [SerializeField] private GameObject feedbackSprite;
     [SerializeField] private float fadeDuration = 0.5f;
     [SerializeField] private float consultationDelay = 3f;
+    [SerializeField] private int consultationMinutes = 50;
     [SerializeField] private Color hoverColor = new Color(1f, 1f, 1f, 0.2f);
     [SerializeField] private MinigameTrigger triggerToReactivate;
     [SerializeField] private GameObject secondTerminal;
@@ -68,30 +71,27 @@ public class DoorSelector : MonoBehaviour
     {
         doorSr.color = defaultColor;
 
-        if (GameManager.Instance != null && GameManager.Instance.questProgress >= 3)
+        int progress = GameManager.Instance != null ? GameManager.Instance.questProgress : 0;
+
+        if (isCorrect && progress == requiredProgress)
         {
-            yield return ShowDoctorAndPlayDialogue(GameManager.Instance.questProgress, reproachNpcId);
+            yield return ShowDoctorAndPlayDialogue(requiredProgress);
             yield return HideDoctor();
 
-            GameManager.Instance.SetShameTimed(0.25f, 3);
-        }
-        else if (isCorrect)
-        {
-            yield return ShowDoctorAndPlayDialogue(1);
-
-            yield return HideDoctor();
+            if (GameManager.Instance != null)
+                GameManager.Instance.ScheduleTime(consultationMinutes);
 
             yield return new WaitForSeconds(consultationDelay);
 
             if (GameManager.Instance != null)
-                GameManager.Instance.questProgress = 42;
+                GameManager.Instance.questProgress = intermediateProgress;
 
-            yield return ShowDoctorAndPlayDialogue(42);
+            yield return ShowDoctorAndPlayDialogue(intermediateProgress);
 
             yield return HideDoctor();
 
             if (GameManager.Instance != null)
-                GameManager.Instance.questProgress = 3;
+                GameManager.Instance.questProgress = completionProgress;
 
             if (ticketButton != null)
                 ticketButton.SetActive(false);
@@ -103,9 +103,14 @@ public class DoorSelector : MonoBehaviour
                     triggerToReactivate.SetMinigameObject(secondTerminal);
             }
         }
+        else if (progress > requiredProgress)
+        {
+            yield return ShowDoctorAndPlayDialogue(progress);
+            yield return HideDoctor();
+            GameManager.Instance?.SetShameTimed(0.25f, 3);
+        }
         else
         {
-            int progress = GameManager.Instance != null ? GameManager.Instance.questProgress : 2;
             yield return ShowDoctorAndPlayDialogue(progress);
             yield return HideDoctor();
 
