@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using System.Collections;
 using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour
@@ -11,6 +12,7 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private GameObject mapButton;
     [SerializeField] private GameObject backButton;
+    [SerializeField] private GameObject[] entranceInteractiveObjects;
 
     private readonly Stack<GameObject> subLocationStack = new Stack<GameObject>();
     private GameObject currentSubRoom;
@@ -20,6 +22,7 @@ public class GameManager : MonoBehaviour
     public string currentLocation;
 
     [SerializeField] private GameObject btnNote;
+    [SerializeField] private MinigameTrigger triggerOnProgress5;
     [SerializeField] private int questProgressBacking;
     public int questProgress
     {
@@ -28,7 +31,9 @@ public class GameManager : MonoBehaviour
         {
             questProgressBacking = value;
             if (btnNote != null)
-                btnNote.SetActive(value == 3);
+                btnNote.SetActive(value == 3 || value == 5);
+            if (value == 5 && triggerOnProgress5 != null)
+                triggerOnProgress5.SetCanActivate(true);
         }
     }
     public static bool IsInputLocked { get; set; }
@@ -52,9 +57,15 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int remainingMinutes = 480;
     [SerializeField] private int currentMoney = 2000;
 
+    [SerializeField] private TextMeshProUGUI dayLabel;
+    [SerializeField] private GameObject endDayPanel;
+
     private float timeAccumulator;
     private const float REAL_SECONDS_PER_GAME_MINUTE = 1f;
+    private const int DAY_MINUTES = 420;
     private int timeToSpend;
+    private int currentDay = 2;
+    private bool isDayEnding;
 
     private void Awake()
     {
@@ -121,9 +132,10 @@ public class GameManager : MonoBehaviour
                 }
             }
 
-            if (remainingMinutes <= 0)
+            if (remainingMinutes <= 0 && currentDay == 2 && !isDayEnding)
             {
-                Debug.Log("Se acabó el tiempo del día");
+                isDayEnding = true;
+                StartCoroutine(EndDayTransition());
             }
         }
 
@@ -206,6 +218,12 @@ public class GameManager : MonoBehaviour
 
         if (mapButton != null) mapButton.SetActive(false);
         if (backButton != null) backButton.SetActive(true);
+
+        foreach (var obj in entranceInteractiveObjects)
+        {
+            if (obj != null)
+                obj.SetActive(false);
+        }
     }
 
     public void PopSubLocation()
@@ -225,6 +243,38 @@ public class GameManager : MonoBehaviour
         {
             if (backButton != null) backButton.SetActive(false);
             if (mapButton != null) mapButton.SetActive(true);
+
+            foreach (var obj in entranceInteractiveObjects)
+            {
+                if (obj != null)
+                    obj.SetActive(true);
+            }
         }
+    }
+
+    private IEnumerator EndDayTransition()
+    {
+        while (DialogueManager.Instance.IsDialogueActive || IsInputLocked || MinigameTrigger.ActiveCount > 0)
+            yield return null;
+
+        while (subLocationStack.Count > 0)
+            PopSubLocation();
+
+        yield return new WaitForSeconds(3f);
+
+        if (endDayPanel != null) endDayPanel.SetActive(true);
+        yield return new WaitForSeconds(2f);
+
+        currentBuildingName = "house";
+        UpdateLocation();
+        remainingMinutes = DAY_MINUTES;
+        timeAccumulator = 0;
+        UpdateTimeDisplay();
+
+        if (dayLabel != null) dayLabel.text = "Viernes";
+        currentDay = 3;
+
+        if (endDayPanel != null) endDayPanel.SetActive(false);
+        isDayEnding = false;
     }
 }

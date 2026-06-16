@@ -108,6 +108,8 @@ public class DoorSelector : MonoBehaviour
             yield return ShowDoctorAndPlayDialogue(progress);
             yield return HideDoctor();
             GameManager.Instance?.SetShameTimed(0.25f, 3);
+            if (ticketButton != null && ticketWasActive)
+                ticketButton.SetActive(true);
         }
         else
         {

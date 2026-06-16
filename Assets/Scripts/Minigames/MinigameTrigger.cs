@@ -9,6 +9,8 @@ public class MinigameTrigger : MonoBehaviour
     [SerializeField] private GameObject npcToHide;
     [SerializeField] private Color hoverColor = new Color(1f, 1f, 1f, 0.5f);
 
+    public static int ActiveCount { get; private set; }
+
     private SpriteRenderer spriteRenderer;
     private Color originalColor;
     private bool wasMinigameActive;
@@ -28,6 +30,7 @@ public class MinigameTrigger : MonoBehaviour
         if (isActive == wasMinigameActive) return;
 
         wasMinigameActive = isActive;
+        if (!isActive) ActiveCount--;
 
         if (npcToHide != null)
             npcToHide.SetActive(!isActive);
@@ -74,6 +77,7 @@ public class MinigameTrigger : MonoBehaviour
         if (mapButton != null)
             mapButton.SetActive(false);
         minigameObject.SetActive(true);
+        ActiveCount++;
     }
 
     private void OnMouseEnter()

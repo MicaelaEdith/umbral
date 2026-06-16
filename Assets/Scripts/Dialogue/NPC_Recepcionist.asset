@@ -23,3 +23,12 @@ MonoBehaviour:
   - requiredProgress: 3
     playerLine: "Hac\xEDa d\xF3nde tengo que ir para estudios?"
     npcLine: Saque un turno de estudios en la terminal y vaya a la izquierda.
+  - requiredProgress: 4
+    playerLine: "Hac\xEDa d\xF3nde tengo que ir para estudios?"
+    npcLine: Es la puerta de la izquierda.
+  - requiredProgress: 5
+    playerLine: Tengo que sacar una orden de retiro de estudios
+    npcLine: Es en la otra terminal.
+  - requiredProgress: 6
+    playerLine: Tengo la orden para retirar los estudios de mi hijo.
+    npcLine: El doctor que firma los estudios no se encuentra, vuelva en otro momento.

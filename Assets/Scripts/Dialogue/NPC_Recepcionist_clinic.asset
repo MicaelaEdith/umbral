@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 071920c32a6056558a742a9ffe847d34, type: 3}
+  m_Name: NPC_Recepcionist_clinic
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueNode
+  npcId: Receptionist_clinic
+  entries:
+  - requiredProgress: 0
+    playerLine: "Buen d\xEDa, necesito hacer el apto f\xEDsico de mi hijo."
+    npcLine: "Buen d\xEDa, ese tr\xE1mite no se realiza ac\xE1, tiene que ir al hospital."
+  - requiredProgress: 1
+    playerLine: "Buen d\xEDa, necesito hacer el apto f\xEDsico de mi hijo."
+    npcLine: "Buen d\xEDa, ese tr\xE1mite no se realiza ac\xE1, tiene que ir al hospital."
+  - requiredProgress: 3
+    playerLine: "Buen d\xEDa, necesito hacer el apto f\xEDsico de mi hijo."
+    npcLine: "Buen d\xEDa, ese tr\xE1mite no se realiza ac\xE1, tiene que ir al hospital."
+  - requiredProgress: 4
+    playerLine: "Buen d\xEDa, tengo que realizar unos estudios."
+    npcLine: "Ac\xE1 no se hacen estudios, solo se atienen urgencias. Vaya al hospital."
+  - requiredProgress: 5
+    playerLine: "Buen d\xEDa, tengo que realizar unos estudios."
+    npcLine: "Ac\xE1 no se hacen estudios, solo se atienen urgencias. Vaya al hospital."
+  - requiredProgress: 6
+    playerLine: "Buen d\xEDa, tengo que retirar unos estudios."
+    npcLine: "No puede retirarlos ac\xE1."

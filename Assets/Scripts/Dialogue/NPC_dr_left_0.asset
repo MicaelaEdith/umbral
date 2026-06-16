@@ -19,7 +19,7 @@ MonoBehaviour:
     npcLine: "Tiene que ir a pediatr\xEDa, en la otra sala del hospital."
   - requiredProgress: 3
     playerLine: "Hola, necesito hacer este tr\xE1mite."
-    npcLine: "Eso no es ac\xE1."
+    npcLine: Solo atendemos con turno.
   - requiredProgress: 4
     playerLine: Hola, necesito hacer este estudio.
     npcLine: Buenas tardes, pase por favor.
