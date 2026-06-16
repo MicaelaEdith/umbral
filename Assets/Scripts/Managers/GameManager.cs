@@ -34,6 +34,21 @@ public class GameManager : MonoBehaviour
                 btnNote.SetActive(value == 3 || value == 5);
             if (value == 5 && triggerOnProgress5 != null)
                 triggerOnProgress5.SetCanActivate(true);
+            if (value == 6 && currentDay == 2)
+            {
+                if (remainingMinutes < 120 && !isDayEnding)
+                {
+                    isDayEnding = true;
+                    StartCoroutine(EndDayTransition(useEarlyPanel: true));
+                }
+                else if (remainingMinutes >= 120)
+                {
+                    isProgress7TimerActive = true;
+                    progress6StartMinutes = remainingMinutes;
+                }
+            }
+            if (value == 7)
+                isProgress7TimerActive = false;
         }
     }
     public static bool IsInputLocked { get; set; }
@@ -59,9 +74,15 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI dayLabel;
     [SerializeField] private GameObject endDayPanel;
+    [SerializeField] private GameObject endDayPanelEarly;
+    [SerializeField] private GameObject dayStartPanel;
+    [SerializeField] private GameObject blackOverlay;
 
     private float timeAccumulator;
     private const float REAL_SECONDS_PER_GAME_MINUTE = 1f;
+    private bool isProgress7TimerActive;
+    private int progress6StartMinutes;
+
     private const int DAY_MINUTES = 420;
     private int timeToSpend;
     private int currentDay = 2;
@@ -132,6 +153,12 @@ public class GameManager : MonoBehaviour
                 }
             }
 
+            if (isProgress7TimerActive && progress6StartMinutes - remainingMinutes >= 120)
+            {
+                isProgress7TimerActive = false;
+                questProgress = 7;
+            }
+
             if (remainingMinutes <= 0 && currentDay == 2 && !isDayEnding)
             {
                 isDayEnding = true;
@@ -169,6 +196,12 @@ public class GameManager : MonoBehaviour
         UpdateTimeDisplay();
         if (timeFeedback != null)
             timeFeedback.Flash();
+
+        if (isProgress7TimerActive && progress6StartMinutes - remainingMinutes >= 120)
+        {
+            isProgress7TimerActive = false;
+            questProgress = 7;
+        }
     }
 
     public void ScheduleTime(int minutes)
@@ -252,7 +285,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private IEnumerator EndDayTransition()
+    private IEnumerator EndDayTransition(bool useEarlyPanel = false)
     {
         while (DialogueManager.Instance.IsDialogueActive || IsInputLocked || MinigameTrigger.ActiveCount > 0)
             yield return null;
@@ -262,8 +295,27 @@ public class GameManager : MonoBehaviour
 
         yield return new WaitForSeconds(3f);
 
-        if (endDayPanel != null) endDayPanel.SetActive(true);
-        yield return new WaitForSeconds(2f);
+        GameObject panel = useEarlyPanel ? endDayPanelEarly : endDayPanel;
+        if (panel != null) panel.SetActive(true);
+        yield return new WaitForSeconds(3f);
+
+        if (blackOverlay != null)
+        {
+            CanvasGroup cg = blackOverlay.GetComponent<CanvasGroup>();
+            if (cg == null) cg = blackOverlay.AddComponent<CanvasGroup>();
+            blackOverlay.SetActive(true);
+            cg.alpha = 0f;
+            float elapsed = 0f;
+            while (elapsed < 4f)
+            {
+                elapsed += Time.deltaTime;
+                cg.alpha = Mathf.Lerp(0f, 1f, elapsed / 4f);
+                yield return null;
+            }
+            cg.alpha = 1f;
+        }
+
+        if (panel != null) panel.SetActive(false);
 
         currentBuildingName = "house";
         UpdateLocation();
@@ -274,7 +326,18 @@ public class GameManager : MonoBehaviour
         if (dayLabel != null) dayLabel.text = "Viernes";
         currentDay = 3;
 
-        if (endDayPanel != null) endDayPanel.SetActive(false);
+        if (blackOverlay != null)
+        {
+            CanvasGroup cg = blackOverlay.GetComponent<CanvasGroup>();
+            if (cg != null) cg.alpha = 0f;
+            blackOverlay.SetActive(false);
+        }
+
+        if (dayStartPanel != null) dayStartPanel.SetActive(true);
+        yield return new WaitForSeconds(3f);
+        if (dayStartPanel != null) dayStartPanel.SetActive(false);
+
+        questProgress = 7;
         isDayEnding = false;
     }
 }

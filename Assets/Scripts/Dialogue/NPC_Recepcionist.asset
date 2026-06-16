@@ -32,3 +32,13 @@ MonoBehaviour:
   - requiredProgress: 6
     playerLine: Tengo la orden para retirar los estudios de mi hijo.
     npcLine: El doctor que firma los estudios no se encuentra, vuelva en otro momento.
+  - requiredProgress: 7
+    playerLine: Tengo la orden para retirar los estudios de mi hijo.
+    npcLine: Claro, permitame el DNI.
+  - requiredProgress: 7
+    playerLine: "Aqu\xED tiene."
+    npcLine: "La direcci\xF3n del DNI no coincide con la del apto fisico de la escuela."
+  - requiredProgress: 7
+    playerLine: "\xBFQu\xE9 tengo que hacer ahora?"
+    npcLine: Vaya a municipalidad y pida un certificado de domicilio, luego vuelva
+      y le entregamos los resultados.

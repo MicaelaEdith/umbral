@@ -25,7 +25,8 @@ MonoBehaviour:
     npcLine: Buenas tardes, pase por favor.
   - requiredProgress: 43
     playerLine: Muchas gracias, Doctora
-    npcLine: De nada, recuerde sacar turno en la terminal para retirar el resultado.
+    npcLine: "De nada, recuerde sacar turno en la terminal para retirar el resultado.
+      Aqu\xED tiene los pasos a seguir."
   - requiredProgress: 5
     playerLine: Hola, necesito los resultados.
     npcLine: "Tiene que sacar turno en la terminal y retirarlos en recepci\xF3n."

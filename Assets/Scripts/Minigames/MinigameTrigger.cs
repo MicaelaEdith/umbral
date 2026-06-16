@@ -7,6 +7,7 @@ public class MinigameTrigger : MonoBehaviour
     [SerializeField] private bool hoverWhenDisabled = false;
     [SerializeField] private GameObject mapButton;
     [SerializeField] private GameObject npcToHide;
+    [SerializeField] private GameObject[] objectsToHideOnOpen;
     [SerializeField] private Color hoverColor = new Color(1f, 1f, 1f, 0.5f);
 
     public static int ActiveCount { get; private set; }
@@ -34,6 +35,9 @@ public class MinigameTrigger : MonoBehaviour
 
         if (npcToHide != null)
             npcToHide.SetActive(!isActive);
+
+        foreach (var obj in objectsToHideOnOpen)
+            if (obj != null) obj.SetActive(!isActive);
 
         if (mapButton != null)
             mapButton.SetActive(!isActive);
