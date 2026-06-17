@@ -2,6 +2,9 @@ using UnityEngine;
 
 public class Destination : MonoBehaviour
 {
+    public static bool blockUnlessInList;
+    public static string[] allowedNames;
+
     [SerializeField]
     private Waypoint destinationWaypoint;
 
@@ -13,6 +16,16 @@ public class Destination : MonoBehaviour
 
     private void OnMouseDown()
     {
+        if (blockUnlessInList && allowedNames != null)
+        {
+            bool found = false;
+            foreach (string name in allowedNames)
+            {
+                if (gameObject.name == name) { found = true; break; }
+            }
+            if (!found) return;
+        }
+
         PathDrawer drawer = FindFirstObjectByType<PathDrawer>();
         if (drawer != null)
         {
