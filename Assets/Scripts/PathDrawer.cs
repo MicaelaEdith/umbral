@@ -35,7 +35,7 @@ public class PathDrawer : MonoBehaviour
 
         if (path == null)
         {
-            Debug.Log("No se encontró camino");
+            Debug.Log($"PathDrawer: no se encontró camino de {currentWaypoint?.name} a {destination?.name}");
             return;
         }
 

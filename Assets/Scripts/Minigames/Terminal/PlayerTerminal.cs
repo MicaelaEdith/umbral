@@ -156,6 +156,8 @@ public class PlayerTerminal : MonoBehaviour
         if (ticketButton != null)
         {
             ticketButton.SetActive(true);
+            if (GameManager.Instance != null)
+                GameManager.Instance.AnimateUIElement(ticketButton);
             if (ticketUISprite != null)
             {
                 Image img = ticketButton.GetComponentInChildren<Image>(true);

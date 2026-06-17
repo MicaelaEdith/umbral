@@ -84,7 +84,11 @@ public class DoorSelector : MonoBehaviour
             yield return new WaitForSeconds(consultationDelay);
 
             if (GameManager.Instance != null)
+            {
+                GameManager.Instance.suppressVictoryCheck = true;
                 GameManager.Instance.questProgress = intermediateProgress;
+                GameManager.Instance.suppressVictoryCheck = false;
+            }
 
             yield return ShowDoctorAndPlayDialogue(intermediateProgress);
 
@@ -109,7 +113,10 @@ public class DoorSelector : MonoBehaviour
             yield return HideDoctor();
             GameManager.Instance?.SetShameTimed(0.25f, 3);
             if (ticketButton != null && ticketWasActive)
+            {
                 ticketButton.SetActive(true);
+                GameManager.Instance?.AnimateUIElement(ticketButton);
+            }
         }
         else
         {
@@ -123,7 +130,10 @@ public class DoorSelector : MonoBehaviour
             }
 
             if (ticketButton != null && ticketWasActive)
+            {
                 ticketButton.SetActive(true);
+                GameManager.Instance?.AnimateUIElement(ticketButton);
+            }
         }
 
         GameManager.IsInputLocked = false;

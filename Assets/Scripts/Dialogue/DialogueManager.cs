@@ -55,7 +55,8 @@ public class DialogueManager : MonoBehaviour
         if (currentEntries.Count == 0) return;
 
         IsDialogueActive = true;
-        currentNPC.PlayTalkAnimation();
+        if (!(currentNPC.NpcId == "Receptionist" && GameManager.Instance.questProgress == 4))
+            currentNPC.PlayTalkAnimation();
 
         if (player != null)
             player.SetActive(false);
@@ -98,7 +99,12 @@ public class DialogueManager : MonoBehaviour
         if (currentEntries == null) return;
 
         if (!isDirectDialogue && currentNPC != null)
-            currentNPC.PlayTalkAnimation();
+        {
+            if (currentNPC.NpcId == "Receptionist" && GameManager.Instance.questProgress == 4)
+                currentNPC.SetAnimationTrigger("left");
+            else
+                currentNPC.PlayTalkAnimation();
+        }
 
         dialogueUI.ShowNpcLine(currentEntries[currentEntryIndex].npcLine, this);
     }

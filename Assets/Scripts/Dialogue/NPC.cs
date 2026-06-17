@@ -56,4 +56,14 @@ public class NPC : MonoBehaviour
             animator.SetTrigger("Idle");
         }
     }
+
+    public void SetAnimationTrigger(string triggerName)
+    {
+        if (animator != null)
+        {
+            animator.ResetTrigger("Idle");
+            animator.ResetTrigger("Talk");
+            animator.SetTrigger(triggerName);
+        }
+    }
 }

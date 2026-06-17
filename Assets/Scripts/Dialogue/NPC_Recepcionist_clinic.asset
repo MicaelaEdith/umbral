@@ -16,13 +16,16 @@ MonoBehaviour:
   entries:
   - requiredProgress: 0
     playerLine: "Buen d\xEDa, necesito hacer el apto f\xEDsico de mi hijo."
-    npcLine: "Buen d\xEDa, ese tr\xE1mite no se realiza ac\xE1, tiene que ir al hospital."
+    npcLine: "Buen d\xEDa, esto es una salita, algo tan complejo lo tiene que hacer
+      en el hospital."
   - requiredProgress: 1
     playerLine: "Buen d\xEDa, necesito hacer el apto f\xEDsico de mi hijo."
-    npcLine: "Buen d\xEDa, ese tr\xE1mite no se realiza ac\xE1, tiene que ir al hospital."
+    npcLine: "Buen d\xEDa, esto es una salita, algo tan complejo lo tiene que hacer
+      en el hospital."
   - requiredProgress: 3
     playerLine: "Buen d\xEDa, necesito hacer el apto f\xEDsico de mi hijo."
-    npcLine: "Buen d\xEDa, ese tr\xE1mite no se realiza ac\xE1, tiene que ir al hospital."
+    npcLine: "Buen d\xEDa, esto es una salita, algo tan complejo lo tiene que hacer
+      en el hospital."
   - requiredProgress: 4
     playerLine: "Buen d\xEDa, tengo que realizar unos estudios."
     npcLine: "Ac\xE1 no se hacen estudios, solo se atienen urgencias. Vaya al hospital."

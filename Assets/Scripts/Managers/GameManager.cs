@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 using System.Collections;
 using System.Collections.Generic;
@@ -22,6 +23,7 @@ public class GameManager : MonoBehaviour
     public string currentLocation;
 
     [SerializeField] private GameObject btnNote;
+    [SerializeField] private GameObject btnNoteProgress5;
     [SerializeField] private MinigameTrigger triggerOnProgress5;
     [SerializeField] private int questProgressBacking;
     public int questProgress
@@ -31,26 +33,39 @@ public class GameManager : MonoBehaviour
         {
             questProgressBacking = value;
             if (btnNote != null)
-                btnNote.SetActive(value == 3 || value == 5);
+            {
+                btnNote.SetActive(value == 3);
+                if (value == 3) AnimateUIElement(btnNote);
+            }
+            if (btnNoteProgress5 != null)
+            {
+                btnNoteProgress5.SetActive(value == 5);
+                if (value == 5) AnimateUIElement(btnNoteProgress5);
+            }
             if (value == 5 && triggerOnProgress5 != null)
                 triggerOnProgress5.SetCanActivate(true);
-            if (value == 6 && currentDay == 2)
+            if (value == 6)
             {
-                if (remainingMinutes < 120 && !isDayEnding)
+                if (!isDayEnding)
                 {
                     isDayEnding = true;
-                    StartCoroutine(EndDayTransition(useEarlyPanel: true));
-                }
-                else if (remainingMinutes >= 120)
-                {
-                    isProgress7TimerActive = true;
-                    progress6StartMinutes = remainingMinutes;
+                    if (currentDay >= 3 && remainingMinutes < 120)
+                        StartCoroutine(DefeatTransition());
+                    else
+                        StartCoroutine(Progress6Flow());
                 }
             }
             if (value == 7)
                 isProgress7TimerActive = false;
+
+            if (!suppressVictoryCheck && value >= maxProgress && !victoryAchieved)
+            {
+                victoryAchieved = true;
+                StartCoroutine(VictoryTransition());
+            }
         }
     }
+    public bool suppressVictoryCheck;
     public static bool IsInputLocked { get; set; }
 
     public bool shameActive;
@@ -77,11 +92,18 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject endDayPanelEarly;
     [SerializeField] private GameObject dayStartPanel;
     [SerializeField] private GameObject blackOverlay;
+    [SerializeField] private GameObject victoryPanel;
+    [SerializeField] private GameObject defeatPanel;
+    [SerializeField] private int maxProgress = 9;
+    [SerializeField] private string[] dayNames = { "", "", "Jueves", "Viernes" };
+    [SerializeField] private Waypoint houseWaypoint;
+    [SerializeField] private Color feedbackColor = new Color(0.9f, 0.3f, 0.3f);
 
     private float timeAccumulator;
     private const float REAL_SECONDS_PER_GAME_MINUTE = 1f;
     private bool isProgress7TimerActive;
     private int progress6StartMinutes;
+    private bool victoryAchieved;
 
     private const int DAY_MINUTES = 420;
     private int timeToSpend;
@@ -159,10 +181,15 @@ public class GameManager : MonoBehaviour
                 questProgress = 7;
             }
 
-            if (remainingMinutes <= 0 && currentDay == 2 && !isDayEnding)
+            if (remainingMinutes <= 0 && !isDayEnding)
             {
                 isDayEnding = true;
-                StartCoroutine(EndDayTransition());
+                if (currentDay <= 2)
+                    StartCoroutine(EndDayTransition());
+                else if (victoryAchieved)
+                    StartCoroutine(VictoryTransition());
+                else
+                    StartCoroutine(DefeatTransition());
             }
         }
 
@@ -319,12 +346,18 @@ public class GameManager : MonoBehaviour
 
         currentBuildingName = "house";
         UpdateLocation();
+
+        PathDrawer pathDrawer = FindFirstObjectByType<PathDrawer>();
+        if (pathDrawer != null && houseWaypoint != null)
+            pathDrawer.SetCurrentWaypoint(houseWaypoint);
+
         remainingMinutes = DAY_MINUTES;
         timeAccumulator = 0;
         UpdateTimeDisplay();
 
-        if (dayLabel != null) dayLabel.text = "Viernes";
-        currentDay = 3;
+        currentDay++;
+        if (dayLabel != null && currentDay >= 0 && currentDay < dayNames.Length)
+            dayLabel.text = dayNames[currentDay];
 
         if (blackOverlay != null)
         {
@@ -337,7 +370,108 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(3f);
         if (dayStartPanel != null) dayStartPanel.SetActive(false);
 
-        questProgress = 7;
+        if (questProgress == 6)
+            questProgress = 7;
+
         isDayEnding = false;
+    }
+
+    private IEnumerator Progress6Flow()
+    {
+        yield return TwoHourFeedback();
+
+        if (remainingMinutes < 120)
+        {
+            StartCoroutine(EndDayTransition(useEarlyPanel: true));
+        }
+        else
+        {
+            isProgress7TimerActive = true;
+            progress6StartMinutes = remainingMinutes;
+            ScheduleTime(120);
+        }
+    }
+
+    private IEnumerator TwoHourFeedback()
+    {
+        int ticks = 8;
+        int chunk = 120 / ticks;
+        for (int i = 0; i < ticks; i++)
+        {
+            remainingMinutes -= chunk;
+            if (remainingMinutes < 0) remainingMinutes = 0;
+            UpdateTimeDisplay();
+            if (timeFeedback != null) timeFeedback.Flash();
+            yield return new WaitForSeconds(0.1f);
+        }
+    }
+
+    private IEnumerator VictoryTransition()
+    {
+        while (DialogueManager.Instance.IsDialogueActive || IsInputLocked || MinigameTrigger.ActiveCount > 0)
+            yield return null;
+
+        if (victoryPanel != null)
+        {
+            victoryPanel.SetActive(true);
+            yield return new WaitForSeconds(4f);
+        }
+
+        // volver al menú principal
+        UnityEngine.SceneManagement.SceneManager.LoadScene("main_menu");
+    }
+
+    private IEnumerator DefeatTransition()
+    {
+        while (DialogueManager.Instance.IsDialogueActive || IsInputLocked || MinigameTrigger.ActiveCount > 0)
+            yield return null;
+
+        if (defeatPanel != null)
+        {
+            defeatPanel.SetActive(true);
+            yield return new WaitForSeconds(4f);
+        }
+
+        UnityEngine.SceneManagement.SceneManager.LoadScene("main_menu");
+    }
+
+    public void AnimateUIElement(GameObject target)
+    {
+        StartCoroutine(AnimateUIFeedback(target));
+    }
+
+    private IEnumerator AnimateUIFeedback(GameObject target)
+    {
+        if (target == null) yield break;
+
+        RectTransform rect = target.GetComponent<RectTransform>();
+        Image image = target.GetComponentInChildren<Image>(true);
+        Color originalColor = image != null ? image.color : Color.white;
+        Vector3 originalScale = rect != null ? rect.localScale : Vector3.one;
+        float duration = 0.15f;
+        float elapsed;
+
+        elapsed = 0f;
+        while (elapsed < duration)
+        {
+            float t = elapsed / duration;
+            if (rect != null) rect.localScale = Vector3.Lerp(originalScale, originalScale * 1.3f, t);
+            if (image != null) image.color = Color.Lerp(originalColor, feedbackColor, t);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        elapsed = 0f;
+        while (elapsed < duration)
+        {
+            float t = elapsed / duration;
+            if (rect != null) rect.localScale = Vector3.Lerp(originalScale * 1.3f, originalScale, t);
+            if (image != null) image.color = Color.Lerp(feedbackColor, originalColor, t);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        if (rect != null) rect.localScale = originalScale;
+        if (image != null) image.color = originalColor;
     }
 }
