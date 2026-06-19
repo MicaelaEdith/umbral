@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -24,6 +25,15 @@ public class DialogueManager : MonoBehaviour
     {
         Instance = this;
 
+        if (dialogueUI == null)
+            dialogueUI = FindFirstObjectByType<DialogueUI>();
+        if (player == null)
+        {
+            player = GameObject.FindGameObjectWithTag("Player");
+            if (player == null)
+                player = GameObject.Find("Player");
+        }
+
         nodesByNpc.Clear();
         foreach (var node in allDialogueNodes)
         {
@@ -45,6 +55,8 @@ public class DialogueManager : MonoBehaviour
 
     public void StartDialogue(NPC npc)
     {
+        GameManager.Instance.TryHideShamePanel();
+
         if (!nodesByNpc.ContainsKey(npc.NpcId)) return;
 
         isDirectDialogue = false;
@@ -58,6 +70,12 @@ public class DialogueManager : MonoBehaviour
         if (!(currentNPC.NpcId == "Receptionist" && GameManager.Instance.questProgress == 4))
             currentNPC.PlayTalkAnimation();
 
+        if (GameManager.Instance.currentBuildingName == "hospital")
+        {
+            int stateIndex = currentNPC.NpcId == "hospital_worker" ? 1 : 0;
+            PlayerVisualState.Instance?.SetState(stateIndex);
+        }
+
         if (player != null)
             player.SetActive(false);
 
@@ -66,6 +84,8 @@ public class DialogueManager : MonoBehaviour
 
     public void PlayDialogueDirect(string npcId, Action onComplete, int requiredProgress)
     {
+        GameManager.Instance.TryHideShamePanel();
+
         if (!nodesByNpc.ContainsKey(npcId)) return;
 
         isDirectDialogue = true;
@@ -134,6 +154,24 @@ public class DialogueManager : MonoBehaviour
                 currentNPC.PlayIdleAnimation();
             if (player != null)
                 player.SetActive(true);
+
+            if (currentNPC != null && currentNPC.NpcId == "hospital_worker")
+            {
+                if (GameManager.Instance.questProgress == 1)
+                    GameManager.Instance.SetShameTimed(0.25f, 3);
+                else if (GameManager.Instance.questProgress == 3)
+                    GameManager.Instance.SetShameTimed(0.25f, 2);
+            }
+
+            if (currentNPC != null && currentNPC.NpcId == "townhall" && GameManager.Instance.questProgress == 7)
+                GameManager.Instance.questProgress = 8;
+            else if (currentNPC != null && currentNPC.NpcId == "Receptionist" && GameManager.Instance.questProgress == 8)
+                GameManager.Instance.questProgress = 9;
+            else if (currentNPC != null && currentNPC.NpcId == "Secretary" && GameManager.Instance.questProgress == 9)
+                StartCoroutine(WaitAndWin());
+
+            if (GameManager.Instance.currentBuildingName == "hospital")
+                PlayerVisualState.Instance?.SetState(0);
         }
 
         Action cb = onDialogueComplete;
@@ -144,5 +182,11 @@ public class DialogueManager : MonoBehaviour
         onDialogueComplete = null;
 
         cb?.Invoke();
+    }
+
+    private IEnumerator WaitAndWin()
+    {
+        yield return new WaitForSeconds(2f);
+        GameManager.Instance.questProgress = 10;
     }
 }

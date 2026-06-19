@@ -8,6 +8,7 @@ public class DialogueUI : MonoBehaviour
     [SerializeField] private GameObject playerBubble;
     [SerializeField] private TextMeshProUGUI playerText;
     [SerializeField] private float autoAdvanceDelay = 1.5f;
+    public float AutoAdvanceDelay { get => autoAdvanceDelay; set => autoAdvanceDelay = value; }
 
     private DialogueManager manager;
     private int lastChangeFrame;

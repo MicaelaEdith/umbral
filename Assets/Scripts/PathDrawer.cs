@@ -123,6 +123,21 @@ public class PathDrawer : MonoBehaviour
         currentWaypoint = waypoint;
     }
 
+    public void ResetToNearestWaypoint()
+    {
+        Waypoint[] allWaypoints = FindObjectsByType<Waypoint>(FindObjectsSortMode.None);
+        float closestDist = float.MaxValue;
+        foreach (Waypoint wp in allWaypoints)
+        {
+            float dist = Vector3.Distance(transform.position, wp.transform.position);
+            if (dist < closestDist)
+            {
+                closestDist = dist;
+                currentWaypoint = wp;
+            }
+        }
+    }
+
     public void CalculateTravelOptions(float distance, out int walkTimeMinutes, out int busTimeMinutes, out int busCost)
     {
         walkTimeMinutes = Mathf.RoundToInt(distance * 4f);

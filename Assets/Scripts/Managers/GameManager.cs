@@ -94,7 +94,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject blackOverlay;
     [SerializeField] private GameObject victoryPanel;
     [SerializeField] private GameObject defeatPanel;
-    [SerializeField] private int maxProgress = 9;
+    [SerializeField] private GameObject shameIntroductionPanel;
+    private bool hasShameIntroductionBeenShown;
+    [SerializeField] private int maxProgress = 10;
     [SerializeField] private string[] dayNames = { "", "", "Jueves", "Viernes" };
     [SerializeField] private Waypoint houseWaypoint;
     [SerializeField] private Color feedbackColor = new Color(0.9f, 0.3f, 0.3f);
@@ -117,6 +119,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        currentBuildingName = "house";
         currentLocation = "house";
         UpdateTimeDisplay();
         UpdateMoneyDisplay();
@@ -256,6 +259,7 @@ public class GameManager : MonoBehaviour
 
         foreach (var building in allBuildings)
         {
+            if (building == null) continue;
             if (building.BuildingName == currentLocation)
                 building.Show();
             else
@@ -269,6 +273,32 @@ public class GameManager : MonoBehaviour
         shameLevel = level;
         shameTimerMinutes = durationMinutes;
         shameFadeOutRemaining = 0;
+
+        if (!hasShameIntroductionBeenShown)
+        {
+            hasShameIntroductionBeenShown = true;
+            if (shameIntroductionPanel != null)
+            {
+                shameIntroductionPanel.SetActive(true);
+                StartCoroutine(HideShameIntroductionPanel());
+            }
+        }
+    }
+
+    private IEnumerator HideShameIntroductionPanel()
+    {
+        yield return new WaitForSeconds(2f);
+        if (shameIntroductionPanel != null)
+            shameIntroductionPanel.SetActive(false);
+    }
+
+    public void TryHideShamePanel()
+    {
+        if (shameIntroductionPanel != null && shameIntroductionPanel.activeSelf)
+        {
+            StopCoroutine(nameof(HideShameIntroductionPanel));
+            shameIntroductionPanel.SetActive(false);
+        }
     }
 
     public void PushSubLocation(GameObject newLocation, GameObject backTarget = null)
@@ -348,8 +378,17 @@ public class GameManager : MonoBehaviour
         UpdateLocation();
 
         PathDrawer pathDrawer = FindFirstObjectByType<PathDrawer>();
-        if (pathDrawer != null && houseWaypoint != null)
-            pathDrawer.SetCurrentWaypoint(houseWaypoint);
+        Card[] cards = FindObjectsByType<Card>(FindObjectsSortMode.None);
+        foreach (Card card in cards)
+        {
+            if (card.BuildingName == "house")
+            {
+                if (pathDrawer != null)
+                    pathDrawer.SetCurrentWaypoint(card.DestinationWaypoint);
+                currentDestinationWaypoint = card.DestinationWaypoint;
+                break;
+            }
+        }
 
         remainingMinutes = DAY_MINUTES;
         timeAccumulator = 0;

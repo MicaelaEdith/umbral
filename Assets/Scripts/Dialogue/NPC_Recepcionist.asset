@@ -42,3 +42,6 @@ MonoBehaviour:
     playerLine: "\xBFQu\xE9 tengo que hacer ahora?"
     npcLine: Vaya a municipalidad y pida un certificado de domicilio, luego vuelva
       y le entregamos los resultados.
+  - requiredProgress: 8
+    playerLine: Tengo el certificado!
+    npcLine: Excelente! tome sus estudios.

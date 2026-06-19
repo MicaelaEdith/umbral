@@ -19,9 +19,11 @@ public class Destination : MonoBehaviour
         if (blockUnlessInList && allowedNames != null)
         {
             bool found = false;
+            Card cardComponent = card != null ? card.GetComponent<Card>() : null;
+            string id = cardComponent != null ? cardComponent.BuildingName : gameObject.name;
             foreach (string name in allowedNames)
             {
-                if (gameObject.name == name) { found = true; break; }
+                if (id == name) { found = true; break; }
             }
             if (!found) return;
         }

@@ -9,31 +9,23 @@ public class FirstMapTutorial : MonoBehaviour
     [SerializeField] private Graphic houseIndicator;
     [SerializeField] private Button houseButton;
 
-    [Header("Map Button Indicator")]
-    [SerializeField] private Graphic mapBtnIndicator;
-    [SerializeField] private Button mapButton;
-
     [Header("Settings")]
     [SerializeField] private float housePulseSpeed = 0.75f;
-    [SerializeField] private float mapPulseSpeed = 1.5f;
     [SerializeField][Range(0f, 1f)] private float maxAlpha = 0.588f;
-    [SerializeField] private int mapPulseCycles = 2;
 
     private Coroutine housePulse;
-    private Coroutine mapPulse;
-    private bool mapClicked;
+    private Day1Tutorial day1Tutorial;
 
     private void Start()
     {
         firstMap.SetActive(true);
 
-        if (mapBtnIndicator != null)
-            mapBtnIndicator.gameObject.SetActive(false);
-
         SetAlpha(houseIndicator, maxAlpha);
         housePulse = StartCoroutine(PulseRoutine(houseIndicator, housePulseSpeed, 0));
 
         houseButton.onClick.AddListener(OnHouseClicked);
+
+        day1Tutorial = FindFirstObjectByType<Day1Tutorial>();
     }
 
     private void OnHouseClicked()
@@ -46,31 +38,8 @@ public class FirstMapTutorial : MonoBehaviour
         GameManager.Instance.currentBuildingName = "house";
         GameManager.Instance.UpdateLocation();
 
-        if (mapBtnIndicator != null)
-        {
-            mapBtnIndicator.gameObject.SetActive(true);
-            SetAlpha(mapBtnIndicator, maxAlpha);
-            mapPulse = StartCoroutine(PulseRoutine(mapBtnIndicator, mapPulseSpeed, mapPulseCycles));
-        }
-
-        if (mapButton != null)
-        {
-            mapButton.onClick.AddListener(OnMapClicked);
-        }
-    }
-
-    private void OnMapClicked()
-    {
-        if (mapClicked) return;
-        mapClicked = true;
-
-        if (mapPulse != null)
-            StopCoroutine(mapPulse);
-        if (mapBtnIndicator != null)
-            mapBtnIndicator.gameObject.SetActive(false);
-
-        Destination.blockUnlessInList = true;
-        Destination.allowedNames = new string[] { "House", "School" };
+        if (day1Tutorial != null)
+            day1Tutorial.StartThoughtBubbleSequence();
     }
 
     private IEnumerator PulseRoutine(Graphic graphic, float speed, int maxCycles)
@@ -91,7 +60,6 @@ public class FirstMapTutorial : MonoBehaviour
 
         if (graphic == null) yield break;
         SetAlpha(graphic, 0f);
-        graphic.gameObject.SetActive(false);
     }
 
     private void SetAlpha(Graphic graphic, float alpha)
@@ -105,8 +73,5 @@ public class FirstMapTutorial : MonoBehaviour
     private void OnDestroy()
     {
         if (housePulse != null) StopCoroutine(housePulse);
-        if (mapPulse != null) StopCoroutine(mapPulse);
-        Destination.blockUnlessInList = false;
-        Destination.allowedNames = null;
     }
 }

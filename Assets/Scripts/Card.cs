@@ -7,9 +7,11 @@ public class Card : MonoBehaviour
 {
     [SerializeField]
     private string buildingName;
+    public string BuildingName => buildingName;
 
     [SerializeField]
     private Waypoint destinationWaypoint;
+    public Waypoint DestinationWaypoint => destinationWaypoint;
 
     [SerializeField]
     private TextMeshProUGUI walkTimeLabel;
