@@ -24,6 +24,7 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private GameObject btnNote;
     [SerializeField] private GameObject btnNoteProgress5;
+    [SerializeField] private GameObject btnTicket;
     [SerializeField] private MinigameTrigger triggerOnProgress5;
     [SerializeField] private int questProgressBacking;
     public int questProgress
@@ -57,6 +58,9 @@ public class GameManager : MonoBehaviour
             }
             if (value == 7)
                 isProgress7TimerActive = false;
+
+            if (btnTicket != null && value == 9)
+                btnTicket.SetActive(false);
 
             if (!suppressVictoryCheck && value >= maxProgress && !victoryAchieved)
             {
@@ -187,8 +191,8 @@ public class GameManager : MonoBehaviour
             if (remainingMinutes <= 0 && !isDayEnding)
             {
                 isDayEnding = true;
-                if (currentDay <= 2)
-                    StartCoroutine(EndDayTransition());
+            if (currentDay <= 2)
+                StartCoroutine(EndDayTransition());
                 else if (victoryAchieved)
                     StartCoroutine(VictoryTransition());
                 else
@@ -450,14 +454,10 @@ public class GameManager : MonoBehaviour
         while (DialogueManager.Instance.IsDialogueActive || IsInputLocked || MinigameTrigger.ActiveCount > 0)
             yield return null;
 
-        if (victoryPanel != null)
-        {
-            victoryPanel.SetActive(true);
-            yield return new WaitForSeconds(4f);
-        }
+        yield return FadeBlackOverlay(1f, 1f);
 
-        // volver al menú principal
-        UnityEngine.SceneManagement.SceneManager.LoadScene("main_menu");
+        if (victoryPanel != null)
+            victoryPanel.SetActive(true);
     }
 
     private IEnumerator DefeatTransition()
@@ -465,10 +465,60 @@ public class GameManager : MonoBehaviour
         while (DialogueManager.Instance.IsDialogueActive || IsInputLocked || MinigameTrigger.ActiveCount > 0)
             yield return null;
 
+        yield return FadeBlackOverlay(1f, 1f);
+
         if (defeatPanel != null)
         {
             defeatPanel.SetActive(true);
-            yield return new WaitForSeconds(4f);
+            defeatPanel.transform.SetAsLastSibling();
+        }
+    }
+
+    private IEnumerator FadeBlackOverlay(float targetAlpha, float duration)
+    {
+        if (blackOverlay == null) yield break;
+
+        CanvasGroup cg = blackOverlay.GetComponent<CanvasGroup>();
+        if (cg == null) cg = blackOverlay.AddComponent<CanvasGroup>();
+        blackOverlay.SetActive(true);
+        float startAlpha = cg.alpha;
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            cg.alpha = Mathf.Lerp(startAlpha, targetAlpha, elapsed / duration);
+            yield return null;
+        }
+        cg.alpha = targetAlpha;
+    }
+
+    public void PlayAgain()
+    {
+        StartCoroutine(PlayAgainRoutine());
+    }
+
+    private IEnumerator PlayAgainRoutine()
+    {
+        GameObject activePanel = null;
+        if (victoryPanel != null && victoryPanel.activeInHierarchy)
+            activePanel = victoryPanel;
+        else if (defeatPanel != null && defeatPanel.activeInHierarchy)
+            activePanel = defeatPanel;
+
+        if (activePanel != null)
+        {
+            CanvasGroup cg = activePanel.GetComponent<CanvasGroup>();
+            if (cg == null) cg = activePanel.AddComponent<CanvasGroup>();
+
+            float elapsed = 0f;
+            float startAlpha = cg.alpha;
+            while (elapsed < 2f)
+            {
+                elapsed += Time.deltaTime;
+                cg.alpha = Mathf.Lerp(startAlpha, 0f, elapsed / 2f);
+                yield return null;
+            }
+            cg.alpha = 0f;
         }
 
         UnityEngine.SceneManagement.SceneManager.LoadScene("main_menu");
