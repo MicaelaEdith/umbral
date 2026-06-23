@@ -8,25 +8,105 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
-    [SerializeField] private MoneyFeedback moneyFeedback;
-    [SerializeField] private TimeFeedback timeFeedback;
+    [Header("UI References")]
+    [SerializeField]
+    private MoneyFeedback moneyFeedback;
+    [SerializeField]
+    private TimeFeedback timeFeedback;
+    [SerializeField]
+    private TextMeshProUGUI timeLabel;
+    [SerializeField]
+    private TextMeshProUGUI moneyLabel;
+    [SerializeField]
+    private TextMeshProUGUI dayLabel;
 
-    [SerializeField] private GameObject mapButton;
-    [SerializeField] private GameObject backButton;
-    [SerializeField] private GameObject[] entranceInteractiveObjects;
+    [Header("Panels")]
+    [SerializeField]
+    private GameObject endDayPanel;
+    [SerializeField]
+    private GameObject endDayPanelEarly;
+    [SerializeField]
+    private GameObject dayStartPanel;
+    [SerializeField]
+    private GameObject blackOverlay;
+    [SerializeField]
+    private GameObject victoryPanel;
+    [SerializeField]
+    private GameObject defeatPanel;
+    [SerializeField]
+    private GameObject shameIntroductionPanel;
 
-    private readonly Stack<GameObject> subLocationStack = new Stack<GameObject>();
-    private GameObject currentSubRoom;
+    [Header("Navigation")]
+    [SerializeField]
+    private GameObject mapButton;
+    [SerializeField]
+    private GameObject backButton;
+    [SerializeField]
+    private GameObject[] entranceInteractiveObjects;
+    [SerializeField]
+    private BuildingInterior[] allBuildings;
+    [SerializeField]
+    private Waypoint houseWaypoint;
+
+    [Header("Quest Items")]
+    [SerializeField]
+    private GameObject btnNote;
+    [SerializeField]
+    private GameObject btnNoteProgress5;
+    [SerializeField]
+    private GameObject btnTicket;
+    [SerializeField]
+    private MinigameTrigger triggerOnProgress5;
+
+    [Header("Game Values")]
+    [SerializeField]
+    private int remainingMinutes = 480;
+    [SerializeField]
+    private int currentMoney = 2000;
+    [SerializeField]
+    private int maxProgress = 10;
+    [SerializeField]
+    private string[] dayNames = { "", "", "Jueves", "Viernes" };
+    [SerializeField]
+    private Color feedbackColor = new Color(0.9f, 0.3f, 0.3f);
+
+    [Header("Shame")]
+    [SerializeField]
+    [Range(1, 5)]
+    private int shameFadeOutMinutes = 3;
+    [SerializeField]
+    private int shameTimeMultiplier = 2;
 
     public string currentBuildingName;
     public Waypoint currentDestinationWaypoint;
     public string currentLocation;
+    public bool shameActive;
+    public bool suppressVictoryCheck;
+    [Range(0f, 1f)]
+    public float shameLevel;
+    [Range(0f, 1f)]
+    public float timedShameOpacity = 0.85f;
 
-    [SerializeField] private GameObject btnNote;
-    [SerializeField] private GameObject btnNoteProgress5;
-    [SerializeField] private GameObject btnTicket;
-    [SerializeField] private MinigameTrigger triggerOnProgress5;
-    [SerializeField] private int questProgressBacking;
+    [SerializeField]
+    private int questProgressBacking;
+    private int shameFlashCooldown;
+    private int shameFadeOutRemaining;
+    private float shameFadeOutStartLevel;
+    private float timeAccumulator;
+    private const float REAL_SECONDS_PER_GAME_MINUTE = 1f;
+    private bool isProgress7TimerActive;
+    private int progress6StartMinutes;
+    private bool victoryAchieved;
+    private const int DAY_MINUTES = 420;
+    private int timeToSpend;
+    private int currentDay = 2;
+    private bool isDayEnding;
+    private readonly Stack<GameObject> subLocationStack = new Stack<GameObject>();
+    private GameObject currentSubRoom;
+    private bool hasShameIntroductionBeenShown;
+
+    public static bool IsInputLocked { get; set; }
+
     public int questProgress
     {
         get => questProgressBacking;
@@ -69,52 +149,10 @@ public class GameManager : MonoBehaviour
             }
         }
     }
-    public bool suppressVictoryCheck;
-    public static bool IsInputLocked { get; set; }
 
-    public bool shameActive;
-    [Range(0f, 1f)] public float shameLevel;
     public int shameTimerMinutes { get; private set; }
-    [Range(0f, 1f)] public float timedShameOpacity = 0.85f;
-    [SerializeField] private int shameTimeMultiplier = 2;
-    private int shameFlashCooldown;
 
-    [SerializeField, Range(1, 5)] private int shameFadeOutMinutes = 3;
-    private int shameFadeOutRemaining;
-    private float shameFadeOutStartLevel;
     public bool IsShameFadingOut => shameFadeOutRemaining > 0;
-
-    [SerializeField] private BuildingInterior[] allBuildings;
-    [SerializeField] private TextMeshProUGUI timeLabel;
-    [SerializeField] private TextMeshProUGUI moneyLabel;
-
-    [SerializeField] private int remainingMinutes = 480;
-    [SerializeField] private int currentMoney = 2000;
-
-    [SerializeField] private TextMeshProUGUI dayLabel;
-    [SerializeField] private GameObject endDayPanel;
-    [SerializeField] private GameObject endDayPanelEarly;
-    [SerializeField] private GameObject dayStartPanel;
-    [SerializeField] private GameObject blackOverlay;
-    [SerializeField] private GameObject victoryPanel;
-    [SerializeField] private GameObject defeatPanel;
-    [SerializeField] private GameObject shameIntroductionPanel;
-    private bool hasShameIntroductionBeenShown;
-    [SerializeField] private int maxProgress = 10;
-    [SerializeField] private string[] dayNames = { "", "", "Jueves", "Viernes" };
-    [SerializeField] private Waypoint houseWaypoint;
-    [SerializeField] private Color feedbackColor = new Color(0.9f, 0.3f, 0.3f);
-
-    private float timeAccumulator;
-    private const float REAL_SECONDS_PER_GAME_MINUTE = 1f;
-    private bool isProgress7TimerActive;
-    private int progress6StartMinutes;
-    private bool victoryAchieved;
-
-    private const int DAY_MINUTES = 420;
-    private int timeToSpend;
-    private int currentDay = 2;
-    private bool isDayEnding;
 
     private void Awake()
     {

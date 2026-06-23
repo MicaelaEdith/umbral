@@ -7,9 +7,12 @@ public class DialogueManager : MonoBehaviour
 {
     public static DialogueManager Instance { get; private set; }
 
-    [SerializeField] private DialogueUI dialogueUI;
-    [SerializeField] private DialogueNode[] allDialogueNodes;
-    [SerializeField] private GameObject player;
+    [SerializeField]
+    private DialogueUI dialogueUI;
+    [SerializeField]
+    private DialogueNode[] allDialogueNodes;
+    [SerializeField]
+    private GameObject player;
 
     private NPC currentNPC;
     private List<DialogueEntry> currentEntries;

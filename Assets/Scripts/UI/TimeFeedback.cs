@@ -4,9 +4,12 @@ using System.Collections;
 
 public class TimeFeedback : MonoBehaviour
 {
-    [SerializeField] private Color flashColor = Color.red;
-    [SerializeField] private float flashDuration = 0.6f;
-    [SerializeField] private float scaleAmount = 1.005f;
+    [SerializeField]
+    private Color flashColor = Color.red;
+    [SerializeField]
+    private float flashDuration = 0.6f;
+    [SerializeField]
+    private float scaleAmount = 1.005f;
 
     private TextMeshProUGUI label;
     private Color originalColor;

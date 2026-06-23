@@ -3,14 +3,22 @@ using UnityEngine.UI;
 
 public class PlayerTerminal : MonoBehaviour
 {
-    [SerializeField] private TerminalMonitor[] monitors;
-    [SerializeField] private NpcTerminal[] npcTerminals;
-    [SerializeField] private GameObject parentToClose;
-    [SerializeField] private GameObject ticketButton;
-    [SerializeField] private MinigameTrigger triggerToDisable;
-    [SerializeField] private MinigameTrigger triggerToEnable;
-    [SerializeField] private Sprite ticketUISprite;
-    [SerializeField] private Image ticketDetailImage;
+    [SerializeField]
+    private TerminalMonitor[] monitors;
+    [SerializeField]
+    private NpcTerminal[] npcTerminals;
+    [SerializeField]
+    private GameObject parentToClose;
+    [SerializeField]
+    private GameObject ticketButton;
+    [SerializeField]
+    private MinigameTrigger triggerToDisable;
+    [SerializeField]
+    private MinigameTrigger triggerToEnable;
+    [SerializeField]
+    private Sprite ticketUISprite;
+    [SerializeField]
+    private Image ticketDetailImage;
 
     private int currentMonitorIndex;
     private int mistakeCount;
@@ -81,7 +89,6 @@ public class PlayerTerminal : MonoBehaviour
         {
             mistakeCount++;
             GameManager.Instance.ScheduleTime(2);
-            Debug.Log($"PlayerTerminal — error #{mistakeCount}");
         }
     }
 

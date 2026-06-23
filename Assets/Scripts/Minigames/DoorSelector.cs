@@ -3,19 +3,32 @@ using System.Collections;
 
 public class DoorSelector : MonoBehaviour
 {
-    [SerializeField] private bool isCorrect;
-    [SerializeField] private int requiredProgress;
-    [SerializeField] private int intermediateProgress = 42;
-    [SerializeField] private int completionProgress = 3;
-    [SerializeField] private string autoDialogueNpcId;
-    [SerializeField] private GameObject feedbackSprite;
-    [SerializeField] private float fadeDuration = 0.5f;
-    [SerializeField] private float consultationDelay = 3f;
-    [SerializeField] private int consultationMinutes = 50;
-    [SerializeField] private Color hoverColor = new Color(1f, 1f, 1f, 0.2f);
-    [SerializeField] private MinigameTrigger triggerToReactivate;
-    [SerializeField] private GameObject secondTerminal;
-    [SerializeField] private GameObject ticketButton;
+    [SerializeField]
+    private bool isCorrect;
+    [SerializeField]
+    private int requiredProgress;
+    [SerializeField]
+    private int intermediateProgress = 42;
+    [SerializeField]
+    private int completionProgress = 3;
+    [SerializeField]
+    private string autoDialogueNpcId;
+    [SerializeField]
+    private GameObject feedbackSprite;
+    [SerializeField]
+    private float fadeDuration = 0.5f;
+    [SerializeField]
+    private float consultationDelay = 3f;
+    [SerializeField]
+    private int consultationMinutes = 50;
+    [SerializeField]
+    private Color hoverColor = new Color(1f, 1f, 1f, 0.2f);
+    [SerializeField]
+    private MinigameTrigger triggerToReactivate;
+    [SerializeField]
+    private GameObject secondTerminal;
+    [SerializeField]
+    private GameObject ticketButton;
 
     private static bool isAnyDoorExecuting;
 

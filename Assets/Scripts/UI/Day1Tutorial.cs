@@ -5,28 +5,44 @@ using System.Collections;
 public class Day1Tutorial : MonoBehaviour
 {
     [Header("Thought Bubble")]
-    [SerializeField] private GameObject thoughtBubble;
+    [SerializeField]
+    private GameObject thoughtBubble;
 
     [Header("Keys")]
-    [SerializeField] private SpriteRenderer keysPulseIndicator;
-    [SerializeField] private ClickableObject keysClickable;
-    [SerializeField] private GameObject keysObject;
+    [SerializeField]
+    private SpriteRenderer keysPulseIndicator;
+    [SerializeField]
+    private ClickableObject keysClickable;
+    [SerializeField]
+    private GameObject keysObject;
 
     [Header("Map Button")]
-    [SerializeField] private Button mapButton;
-    [SerializeField] private Graphic mapBtnIndicator;
+    [SerializeField]
+    private Button mapButton;
+    [SerializeField]
+    private Graphic mapBtnIndicator;
 
     [Header("End Panel")]
-    [SerializeField] private GameObject endPanel;
-    [SerializeField] private Image blackOverlay;
+    [SerializeField]
+    private GameObject endPanel;
+    [SerializeField]
+    private Image blackOverlay;
 
     [Header("Settings")]
-    [SerializeField] private float thoughtBubbleDelay = 2f;
-    [SerializeField] private float pulseSpeed = 1.5f;
-    [SerializeField] private int pulseCycles = 2;
-    [SerializeField][Range(0f, 1f)] private float maxAlpha = 0.67f;
+    [SerializeField]
+    private float thoughtBubbleDelay = 2f;
+    [SerializeField]
+    private float pulseSpeed = 1.5f;
+    [SerializeField]
+    private int pulseCycles = 2;
+    [SerializeField]
+    [Range(0f, 1f)]
+    private float maxAlpha = 0.67f;
 
     private int tutorialProgressBacking;
+    private Coroutine pulseRoutine;
+    private bool filterSet;
+
     public int tutorialProgress
     {
         get => tutorialProgressBacking;
@@ -36,9 +52,6 @@ public class Day1Tutorial : MonoBehaviour
             OnProgressChanged();
         }
     }
-
-    private Coroutine pulseRoutine;
-    private bool filterSet;
 
     private void Start()
     {

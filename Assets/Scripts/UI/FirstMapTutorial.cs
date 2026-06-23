@@ -5,13 +5,19 @@ using System.Collections;
 public class FirstMapTutorial : MonoBehaviour
 {
     [Header("First Map")]
-    [SerializeField] private GameObject firstMap;
-    [SerializeField] private Graphic houseIndicator;
-    [SerializeField] private Button houseButton;
+    [SerializeField]
+    private GameObject firstMap;
+    [SerializeField]
+    private Graphic houseIndicator;
+    [SerializeField]
+    private Button houseButton;
 
     [Header("Settings")]
-    [SerializeField] private float housePulseSpeed = 0.75f;
-    [SerializeField][Range(0f, 1f)] private float maxAlpha = 0.588f;
+    [SerializeField]
+    private float housePulseSpeed = 0.75f;
+    [SerializeField]
+    [Range(0f, 1f)]
+    private float maxAlpha = 0.588f;
 
     private Coroutine housePulse;
     private Day1Tutorial day1Tutorial;

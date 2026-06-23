@@ -4,13 +4,18 @@ public class AudioManager : MonoBehaviour
 {
     public static AudioManager Instance { get; private set; }
 
-    [SerializeField] private AudioSource musicSource;
-    [SerializeField] private AudioSource sfxSource;
-    [SerializeField] private AudioClip clickClip;
-
-    [SerializeField] private AudioClip musicClip;
+    [SerializeField]
+    private AudioSource musicSource;
+    [SerializeField]
+    private AudioSource sfxSource;
+    [SerializeField]
+    private AudioClip clickClip;
+    [SerializeField]
+    private AudioClip musicClip;
 
     private bool isMuted;
+
+    public bool IsMuted => isMuted;
 
     private void Awake()
     {
@@ -69,8 +74,6 @@ public class AudioManager : MonoBehaviour
         isMuted = !isMuted;
         ApplyMute();
     }
-
-    public bool IsMuted => isMuted;
 
     private void ApplyMute()
     {

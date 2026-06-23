@@ -2,7 +2,8 @@ using UnityEngine;
 
 public class BuildingInterior : MonoBehaviour
 {
-    [SerializeField] private string buildingName;
+    [SerializeField]
+    private string buildingName;
 
     public string BuildingName => buildingName;
 

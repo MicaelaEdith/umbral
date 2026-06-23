@@ -3,11 +3,18 @@ using UnityEngine.UI;
 
 public class ShameBar : MonoBehaviour
 {
-    [SerializeField] private Image overlayImage;
-    [SerializeField] private Color overlayColor = new Color(1f, 0f, 0f, 1f);
-    [SerializeField, Range(0f, 1f)] private float maxOpacity = 0.27f;
-    [SerializeField] private float pulseSpeed = 3f;
-    [SerializeField, Range(0f, 1f)] private float pulseMin = 0.75f;
+    [SerializeField]
+    private Image overlayImage;
+    [SerializeField]
+    private Color overlayColor = new Color(1f, 0f, 0f, 1f);
+    [SerializeField]
+    [Range(0f, 1f)]
+    private float maxOpacity = 0.27f;
+    [SerializeField]
+    private float pulseSpeed = 3f;
+    [SerializeField]
+    [Range(0f, 1f)]
+    private float pulseMin = 0.75f;
 
     private void Update()
     {

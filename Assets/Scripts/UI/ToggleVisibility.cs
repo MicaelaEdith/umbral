@@ -2,7 +2,8 @@ using UnityEngine;
 
 public class ToggleVisibility : MonoBehaviour
 {
-    [SerializeField] private GameObject target;
+    [SerializeField]
+    private GameObject target;
 
     public void Show()
     {

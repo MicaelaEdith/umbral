@@ -2,7 +2,8 @@ using UnityEngine;
 
 public class SignSection : MonoBehaviour
 {
-    [SerializeField] private Color hoverColor = new Color(1, 1, 1, 0.5f);
+    [SerializeField]
+    private Color hoverColor = new Color(1, 1, 1, 0.5f);
 
     private SpriteRenderer sr;
     private Color defaultColor;

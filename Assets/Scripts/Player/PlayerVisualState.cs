@@ -4,7 +4,8 @@ public class PlayerVisualState : MonoBehaviour
 {
     public static PlayerVisualState Instance { get; private set; }
 
-    [SerializeField] private GameObject[] visualStates;
+    [SerializeField]
+    private GameObject[] visualStates;
 
     private void Awake()
     {

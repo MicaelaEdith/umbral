@@ -2,10 +2,14 @@ using UnityEngine;
 
 public class HospitalRedirect : MonoBehaviour
 {
-    [SerializeField] private GameObject targetRoom;
-    [SerializeField] private GameObject previousRoom;
-    [SerializeField] private int requiredProgress = 1;
-    [SerializeField] private Color hoverColor = new Color(0f, 0f, 0f, 0.2f);
+    [SerializeField]
+    private GameObject targetRoom;
+    [SerializeField]
+    private GameObject previousRoom;
+    [SerializeField]
+    private int requiredProgress = 1;
+    [SerializeField]
+    private Color hoverColor = new Color(0f, 0f, 0f, 0.2f);
 
     private SpriteRenderer sr;
 

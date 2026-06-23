@@ -5,7 +5,8 @@ public class ClickableObject : MonoBehaviour
 {
     public UnityEvent OnClick;
 
-    [SerializeField] private float hoverDarkenAmount = 0.85f;
+    [SerializeField]
+    private float hoverDarkenAmount = 0.85f;
 
     private SpriteRenderer sr;
     private Color defaultColor;

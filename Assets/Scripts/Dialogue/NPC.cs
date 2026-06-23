@@ -2,9 +2,12 @@ using UnityEngine;
 
 public class NPC : MonoBehaviour
 {
-    [SerializeField] private string npcId;
-    [SerializeField] private string npcName;
-    [SerializeField] private float hoverDarkenAmount = 0.85f;
+    [SerializeField]
+    private string npcId;
+    [SerializeField]
+    private string npcName;
+    [SerializeField]
+    private float hoverDarkenAmount = 0.85f;
 
     private SpriteRenderer sr;
     private Color defaultColor;

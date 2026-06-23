@@ -3,8 +3,10 @@ using TMPro;
 
 public class SettingsPanel : MonoBehaviour
 {
-    [SerializeField] private GameObject panel;
-    [SerializeField] private TextMeshProUGUI audioStatusText;
+    [SerializeField]
+    private GameObject panel;
+    [SerializeField]
+    private TextMeshProUGUI audioStatusText;
 
     private void Start()
     {

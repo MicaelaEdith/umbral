@@ -2,9 +2,12 @@ using UnityEngine;
 
 public class SignboardDirector : MonoBehaviour
 {
-    [SerializeField] private GameObject leftRoom;
-    [SerializeField] private GameObject rightRoom;
-    [SerializeField] private GameObject previousRoom;
+    [SerializeField]
+    private GameObject leftRoom;
+    [SerializeField]
+    private GameObject rightRoom;
+    [SerializeField]
+    private GameObject previousRoom;
 
     public void SelectOption(int index)
     {

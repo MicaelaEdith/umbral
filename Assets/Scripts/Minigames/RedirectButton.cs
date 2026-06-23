@@ -2,10 +2,14 @@ using UnityEngine;
 
 public class RedirectButton : MonoBehaviour
 {
-    [SerializeField] private GameObject minigameParent;
-    [SerializeField] private GameObject mapButton;
-    [SerializeField] private SignboardDirector director;
-    [SerializeField] private int optionIndex;
+    [SerializeField]
+    private GameObject minigameParent;
+    [SerializeField]
+    private GameObject mapButton;
+    [SerializeField]
+    private SignboardDirector director;
+    [SerializeField]
+    private int optionIndex;
 
     private void OnMouseDown()
     {

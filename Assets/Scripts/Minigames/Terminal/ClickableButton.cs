@@ -2,10 +2,14 @@ using UnityEngine;
 
 public class ClickableButton : MonoBehaviour
 {
-    [SerializeField] private float hoverAlpha = 0.7f;
-    [SerializeField] private float pressedAlpha = 0.4f;
-    [SerializeField] private bool isCancel;
-    [SerializeField] private Sprite pressedSprite;
+    [SerializeField]
+    private float hoverAlpha = 0.7f;
+    [SerializeField]
+    private float pressedAlpha = 0.4f;
+    [SerializeField]
+    private bool isCancel;
+    [SerializeField]
+    private Sprite pressedSprite;
 
     private SpriteRenderer spriteRenderer;
     private bool isPressed;

@@ -3,12 +3,16 @@ using TMPro;
 
 public class DialogueUI : MonoBehaviour
 {
-    [SerializeField] private GameObject npcBubble;
-    [SerializeField] private TextMeshProUGUI npcText;
-    [SerializeField] private GameObject playerBubble;
-    [SerializeField] private TextMeshProUGUI playerText;
-    [SerializeField] private float autoAdvanceDelay = 1.5f;
-    public float AutoAdvanceDelay { get => autoAdvanceDelay; set => autoAdvanceDelay = value; }
+    [SerializeField]
+    private GameObject npcBubble;
+    [SerializeField]
+    private TextMeshProUGUI npcText;
+    [SerializeField]
+    private GameObject playerBubble;
+    [SerializeField]
+    private TextMeshProUGUI playerText;
+    [SerializeField]
+    private float autoAdvanceDelay = 1.5f;
 
     private DialogueManager manager;
     private int lastChangeFrame;
@@ -16,6 +20,8 @@ public class DialogueUI : MonoBehaviour
 
     private enum State { Hidden, ShowingNpc, ShowingPlayer }
     private State state = State.Hidden;
+
+    public float AutoAdvanceDelay { get => autoAdvanceDelay; set => autoAdvanceDelay = value; }
 
     private void Awake()
     {

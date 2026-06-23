@@ -2,9 +2,12 @@ using UnityEngine;
 
 public class DoorTrigger : MonoBehaviour
 {
-    [SerializeField] private GameObject minigame;
-    [SerializeField] private GameObject[] objectsToHideOnOpen;
-    [SerializeField] private Color hoverColor = new Color(1f, 1f, 1f, 0.15f);
+    [SerializeField]
+    private GameObject minigame;
+    [SerializeField]
+    private GameObject[] objectsToHideOnOpen;
+    [SerializeField]
+    private Color hoverColor = new Color(1f, 1f, 1f, 0.15f);
 
     private SpriteRenderer sr;
     private Color defaultColor;

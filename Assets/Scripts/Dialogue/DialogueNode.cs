@@ -11,8 +11,10 @@ public class DialogueEntry
 [CreateAssetMenu(menuName = "Umbral/Dialogue Node", fileName = "NewDialogueNode")]
 public class DialogueNode : ScriptableObject
 {
-    [SerializeField] private string npcId;
-    [SerializeField] private DialogueEntry[] entries;
+    [SerializeField]
+    private string npcId;
+    [SerializeField]
+    private DialogueEntry[] entries;
 
     public string NpcId => npcId;
     public DialogueEntry[] Entries => entries;

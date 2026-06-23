@@ -2,19 +2,26 @@ using UnityEngine;
 
 public class MinigameTrigger : MonoBehaviour
 {
-    [SerializeField] private GameObject minigameObject;
-    [SerializeField] private bool canActivate = true;
-    [SerializeField] private bool hoverWhenDisabled = false;
-    [SerializeField] private GameObject mapButton;
-    [SerializeField] private GameObject npcToHide;
-    [SerializeField] private GameObject[] objectsToHideOnOpen;
-    [SerializeField] private Color hoverColor = new Color(1f, 1f, 1f, 0.5f);
-
-    public static int ActiveCount { get; private set; }
+    [SerializeField]
+    private GameObject minigameObject;
+    [SerializeField]
+    private bool canActivate = true;
+    [SerializeField]
+    private bool hoverWhenDisabled = false;
+    [SerializeField]
+    private GameObject mapButton;
+    [SerializeField]
+    private GameObject npcToHide;
+    [SerializeField]
+    private GameObject[] objectsToHideOnOpen;
+    [SerializeField]
+    private Color hoverColor = new Color(1f, 1f, 1f, 0.5f);
 
     private SpriteRenderer spriteRenderer;
     private Color originalColor;
     private bool wasMinigameActive;
+
+    public static int ActiveCount { get; private set; }
 
     private void Awake()
     {
