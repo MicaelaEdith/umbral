@@ -42,6 +42,7 @@ public class HospitalRedirect : MonoBehaviour
 
     private void OnMouseDown()
     {
+        if (AudioManager.Instance != null) AudioManager.Instance.PlayClick();
         if (GameManager.Instance == null) return;
         if (GameManager.Instance.questProgress < requiredProgress) return;
         if (targetRoom == null) return;

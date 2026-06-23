@@ -35,6 +35,7 @@ public class ClickableObject : MonoBehaviour
 
     private void OnMouseDown()
     {
+        if (AudioManager.Instance != null) AudioManager.Instance.PlayClick();
         OnClick?.Invoke();
     }
 }

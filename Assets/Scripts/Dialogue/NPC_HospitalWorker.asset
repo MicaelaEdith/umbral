@@ -33,3 +33,13 @@ MonoBehaviour:
   - requiredProgress: 5
     playerLine: "Me dijeron que retire los estudios en la recepci\xF3n."
     npcLine: "\xBFUsted me vio cara de recepci\xF3n?"
+  - requiredProgress: 6
+    playerLine: "Ya saqu\xE9 la orden de retiro de estudios \xBFSabe a d\xF3nde tengo
+      que ir?"
+    npcLine: No me moleste, estoy trabajando.
+  - requiredProgress: 7
+    playerLine: "Necesito ayuda para saber c\xF3mo continuar con esto."
+    npcLine: Busque a alguien que la ayude.
+  - requiredProgress: 8
+    playerLine: "Disculpe \xBFPuede ayudarme ocn esto?"
+    npcLine: No. Estoy ocupado.

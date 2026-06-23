@@ -30,3 +30,6 @@ MonoBehaviour:
   - requiredProgress: 5
     playerLine: "Hola Doctora \xBFsabe c\xF3mo puedo retirar los estudios?"
     npcLine: Pida ayuda en la entrada, estoy atendiendo.
+  - requiredProgress: 6
+    playerLine: "Hola Doctora \xBFsabe c\xF3mo puedo retirar los estudios?"
+    npcLine: Pida ayuda en la entrada, estoy atendiendo.

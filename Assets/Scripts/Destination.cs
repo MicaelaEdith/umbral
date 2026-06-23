@@ -16,6 +16,7 @@ public class Destination : MonoBehaviour
 
     private void OnMouseDown()
     {
+        if (AudioManager.Instance != null) AudioManager.Instance.PlayClick();
         if (blockUnlessInList && allowedNames != null)
         {
             bool found = false;

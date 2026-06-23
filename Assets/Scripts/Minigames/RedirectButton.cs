@@ -9,6 +9,7 @@ public class RedirectButton : MonoBehaviour
 
     private void OnMouseDown()
     {
+        if (AudioManager.Instance != null) AudioManager.Instance.PlayClick();
         if (director != null)
             director.SelectOption(optionIndex);
 

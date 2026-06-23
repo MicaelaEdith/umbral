@@ -36,6 +36,7 @@ public class NPC : MonoBehaviour
 
     private void OnMouseDown()
     {
+        if (AudioManager.Instance != null) AudioManager.Instance.PlayClick();
         DialogueManager.Instance.StartDialogue(this);
     }
 

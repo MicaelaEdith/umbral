@@ -35,3 +35,12 @@ MonoBehaviour:
   - requiredProgress: 6
     playerLine: "Buen d\xEDa, tengo que retirar unos estudios."
     npcLine: "No puede retirarlos ac\xE1."
+  - requiredProgress: 7
+    playerLine: "Buen d\xEDa, tengo que retirar unos estudios."
+    npcLine: "No puede retirarlos ac\xE1."
+  - requiredProgress: 8
+    playerLine: "Buen d\xEDa, tengo que retirar unos estudios."
+    npcLine: "No puede retirarlos ac\xE1."
+  - requiredProgress: 9
+    playerLine: "Buen d\xEDa, tengo que entregar unos estudios."
+    npcLine: "No puede entregarlos ac\xE1."

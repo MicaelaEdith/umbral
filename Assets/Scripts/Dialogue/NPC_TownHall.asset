@@ -17,3 +17,27 @@ MonoBehaviour:
   - requiredProgress: 7
     playerLine: Hola Necesito un certificado de domicilio.
     npcLine: Claro, aqui lo tiene.
+  - requiredProgress: 1
+    playerLine: "Hola, necesito hacer el apto f\xEDsico para mi hijo."
+    npcLine: Tiene que ir al hospital.
+  - requiredProgress: 2
+    playerLine: "Hola, necesito hacer el apto f\xEDsico para mi hijo."
+    npcLine: Tiene que ir al hospital.
+  - requiredProgress: 3
+    playerLine: "Hola, necesito hacer el apto f\xEDsico para mi hijo."
+    npcLine: Tiene que ir al hospital.
+  - requiredProgress: 4
+    playerLine: "Hola, necesito hacer el apto f\xEDsico para mi hijo."
+    npcLine: Tiene que ir al hospital.
+  - requiredProgress: 5
+    playerLine: "Hola, necesito hacer el apto f\xEDsico para mi hijo."
+    npcLine: Tiene que ir al hospital.
+  - requiredProgress: 6
+    playerLine: "Hola, necesito hacer el apto f\xEDsico para mi hijo."
+    npcLine: Tiene que ir al hospital.
+  - requiredProgress: 8
+    playerLine: "Hola necesito terminar este tr\xE1mite."
+    npcLine: No puedo ayudarla con eso.
+  - requiredProgress: 9
+    playerLine: "Hola necesito terminar este tr\xE1mite."
+    npcLine: No puedo ayudarla con eso.

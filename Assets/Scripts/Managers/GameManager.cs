@@ -236,6 +236,17 @@ public class GameManager : MonoBehaviour
             isProgress7TimerActive = false;
             questProgress = 7;
         }
+
+        if (remainingMinutes <= 0 && !isDayEnding)
+        {
+            isDayEnding = true;
+            if (currentDay <= 2)
+                StartCoroutine(EndDayTransition());
+            else if (victoryAchieved)
+                StartCoroutine(VictoryTransition());
+            else
+                StartCoroutine(DefeatTransition());
+        }
     }
 
     public void ScheduleTime(int minutes)
@@ -351,13 +362,14 @@ public class GameManager : MonoBehaviour
         while (DialogueManager.Instance.IsDialogueActive || IsInputLocked || MinigameTrigger.ActiveCount > 0)
             yield return null;
 
-        while (subLocationStack.Count > 0)
-            PopSubLocation();
-
         yield return new WaitForSeconds(3f);
 
         GameObject panel = useEarlyPanel ? endDayPanelEarly : endDayPanel;
         if (panel != null) panel.SetActive(true);
+
+        while (subLocationStack.Count > 0)
+            PopSubLocation();
+
         yield return new WaitForSeconds(3f);
 
         if (blackOverlay != null)
@@ -423,15 +435,14 @@ public class GameManager : MonoBehaviour
     {
         yield return TwoHourFeedback();
 
-        if (remainingMinutes < 120)
+        if (remainingMinutes <= 0)
         {
             StartCoroutine(EndDayTransition(useEarlyPanel: true));
         }
         else
         {
-            isProgress7TimerActive = true;
-            progress6StartMinutes = remainingMinutes;
-            ScheduleTime(120);
+            questProgress = 7;
+            isDayEnding = false;
         }
     }
 

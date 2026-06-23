@@ -56,6 +56,7 @@ public class DoorSelector : MonoBehaviour
 
     private void OnMouseDown()
     {
+        if (AudioManager.Instance != null) AudioManager.Instance.PlayClick();
         if (isExecuting || isAnyDoorExecuting) return;
         isAnyDoorExecuting = true;
         isExecuting = true;

@@ -75,6 +75,7 @@ public class MinigameTrigger : MonoBehaviour
 
     private void OnMouseDown()
     {
+        if (AudioManager.Instance != null) AudioManager.Instance.PlayClick();
         if (!canActivate || MapToggle.IsOpen) return;
         if (minigameObject == null) return;
         if (minigameObject.activeSelf) return;

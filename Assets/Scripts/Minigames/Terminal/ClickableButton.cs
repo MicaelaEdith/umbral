@@ -42,6 +42,7 @@ public class ClickableButton : MonoBehaviour
 
     private void OnMouseDown()
     {
+        if (AudioManager.Instance != null) AudioManager.Instance.PlayClick();
         if (!IsInteractable || isPressed) return;
         Press();
     }

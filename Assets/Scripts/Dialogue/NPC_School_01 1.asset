@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 071920c32a6056558a742a9ffe847d34, type: 3}
+  m_Name: NPC_School_01 1
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueNode
+  npcId: Secretary
+  entries:
+  - requiredProgress: 0
+    playerLine: "Hola, me dijeron que pase por secretar\xEDa, soy Carmela, la mam\xE1
+      de Bruno"
+    npcLine: "S\xED, necesitamos que termine de completar la documentaci\xF3n de
+      Bruno"
+  - requiredProgress: 0
+    playerLine: "\xBFQue documentaci\xF3n falta?"
+    npcLine: "Falta su apto m\xE9dico, tiene que traerlo antes del viernes a las
+      18hs o su inscripci\xF3n no se har\xE1 efectiva"
+  - requiredProgress: 9
+    playerLine: "Aqu\xED tiene toda la documentaci\xF3n completa de Bruno."
+    npcLine: "Qu\xE9 bueno que trajo los documentos, Bruno podr\xE1 seguir en la
+      escuela."
+  - requiredProgress: 1
+    playerLine: "Todav\xEDa no tengo la documentaci\xF3n."
+    npcLine: Vuelva cuando tenga todo resuelto.
+  - requiredProgress: 2
+    playerLine: "Todav\xEDa no tengo la documentaci\xF3n."
+    npcLine: Vuelva cuando tenga todo resuelto.
+  - requiredProgress: 3
+    playerLine: "Ya empec\xE9 el tr\xE1mite."
+    npcLine: Excelente, espero que tenga todo antes de las 18hs del viernes.
+  - requiredProgress: 4
+    playerLine: "Ya empec\xE9 el tr\xE1mite."
+    npcLine: Bien, vuelva cuando tenga todos los papeles.
+  - requiredProgress: 5
+    playerLine: "Ya empec\xE9 el tr\xE1mite."
+    npcLine: Bien, vuelva cuando tenga todos los papeles.
+  - requiredProgress: 6
+    playerLine: "Ya empec\xE9 el tr\xE1mite."
+    npcLine: Bien, vuelva cuando tenga todos los papeles.
+  - requiredProgress: 7
+    playerLine: Ya hice los estudios pero me piden un certificado de domicilio.
+    npcLine: Tiene que pedirlo en la municipalidad.
+  - requiredProgress: 8
+    playerLine: Tengo el certificado de domicilio.
+    npcLine: "Lo que necesito que traiga es el apto f\xEDsico."

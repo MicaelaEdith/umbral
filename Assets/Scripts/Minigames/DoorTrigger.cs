@@ -42,6 +42,7 @@ public class DoorTrigger : MonoBehaviour
 
     private void OnMouseDown()
     {
+        if (AudioManager.Instance != null) AudioManager.Instance.PlayClick();
         if (minigame != null)
         {
             minigame.SetActive(true);

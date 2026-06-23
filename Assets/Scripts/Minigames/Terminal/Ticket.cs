@@ -6,6 +6,7 @@ public class Ticket : MonoBehaviour
 
     private void OnMouseDown()
     {
+        if (AudioManager.Instance != null) AudioManager.Instance.PlayClick();
         OnCollected?.Invoke();
     }
 }
